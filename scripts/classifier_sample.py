@@ -22,6 +22,8 @@ from guided_diffusion.script_util import (
     args_to_dict,
 )
 
+# Hello
+
 def main():
     args = create_argparser().parse_args()
 
