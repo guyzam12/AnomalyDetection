@@ -443,28 +443,22 @@ def configure(dir=None, format_strs=None, comm=None, log_suffix=""):
     """
     If comm is provided, average all numerical stats across that comm
     """
-    if dir is None:
-        dir = os.getenv("OPENAI_LOGDIR")
+    # if dir is None:
+    #     dir = os.getenv("OPENAI_LOGDIR")
     if dir is None:
         dir = osp.join(
-            tempfile.gettempdir(),
-            datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f"),
+            "~/PycharmProjects/git/AnomalyDiffusion/logs/",
+            #"/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/logs/",
+            #tempfile.gettempdir(),
+            datetime.datetime.now().strftime("log-%Y-%m-%d-%H"),
+            #datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f"),
         )
     assert isinstance(dir, str)
-    dir = os.path.expanduser(dir)
-    os.makedirs(os.path.expanduser(dir), exist_ok=True)
-
-    rank = get_rank_without_mpi_import()
-    if rank > 0:
-        log_suffix = log_suffix + "-rank%03i" % rank
-
-    if format_strs is None:
-        if rank == 0:
-            format_strs = os.getenv("OPENAI_LOG_FORMAT", "stdout,log,csv").split(",")
-        else:
-            format_strs = os.getenv("OPENAI_LOG_FORMAT_MPI", "log").split(",")
+    dir = os.path.expanduser(dir) #Changing from ~ to realpath
+    os.makedirs(dir, exist_ok=True) #Making directory, if already exists because of exist_ok=True, it doesn't raise error)
+    format_strs = ["stdout","log","csv"]
     format_strs = filter(None, format_strs)
-    output_formats = [make_output_format(f, dir, log_suffix) for f in format_strs]
+    output_formats = [make_output_format(f, dir, log_suffix) for f in format_strs] #Formats for Logger object
 
     Logger.CURRENT = Logger(dir=dir, output_formats=output_formats, comm=comm)
     if output_formats:

@@ -1,0 +1,11 @@
+loss,step
+tensor(1.0204, grad_fn=<MseLossBackward0>),0
+tensor(0.2378, grad_fn=<MseLossBackward0>),10
+tensor(0.1698, grad_fn=<MseLossBackward0>),20
+tensor(0.1597, grad_fn=<MseLossBackward0>),30
+tensor(0.1152, grad_fn=<MseLossBackward0>),40
+tensor(0.1105, grad_fn=<MseLossBackward0>),50
+tensor(0.1108, grad_fn=<MseLossBackward0>),60
+tensor(0.0838, grad_fn=<MseLossBackward0>),70
+tensor(0.0929, grad_fn=<MseLossBackward0>),80
+tensor(0.0775, grad_fn=<MseLossBackward0>),90

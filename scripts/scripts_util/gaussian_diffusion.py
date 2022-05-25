@@ -11,8 +11,8 @@ import math
 import numpy as np
 import torch as th
 
-from .nn import mean_flat
-from .losses import normal_kl, discretized_gaussian_log_likelihood
+#from .nn import mean_flat
+#from .losses import normal_kl, discretized_gaussian_log_likelihood
 
 
 def get_named_beta_schedule(schedule_name, num_diffusion_timesteps):
@@ -32,11 +32,6 @@ def get_named_beta_schedule(schedule_name, num_diffusion_timesteps):
         beta_end = scale * 0.02
         return np.linspace(
             beta_start, beta_end, num_diffusion_timesteps, dtype=np.float64
-        )
-    elif schedule_name == "cosine":
-        return betas_for_alpha_bar(
-            num_diffusion_timesteps,
-            lambda t: math.cos((t + 0.008) / 1.008 * math.pi / 2) ** 2,
         )
     else:
         raise NotImplementedError(f"unknown beta schedule: {schedule_name}")
@@ -117,7 +112,6 @@ class GaussianDiffusion:
 
     def __init__(
         self,
-        *,
         betas,
         model_mean_type,
         model_var_type,
