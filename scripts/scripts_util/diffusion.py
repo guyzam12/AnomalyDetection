@@ -9,7 +9,6 @@ NUM_CLASSES = 1000
 
 
 def create_diffusion(
-        *,
         steps=1000,
         noise_schedule="linear",
 ):

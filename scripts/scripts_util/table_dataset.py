@@ -40,11 +40,11 @@ def load_data(
     )
     if deterministic:
         loader = DataLoader(
-            dataset, batch_size=batch_size, shuffle=False, num_workers=1, drop_last=True
+            dataset, batch_size=batch_size, shuffle=False, num_workers=0, drop_last=True
         )
     else:
         loader = DataLoader(
-            dataset, batch_size=batch_size, shuffle=True, num_workers=1, drop_last=True
+            dataset, batch_size=batch_size, shuffle=True, num_workers=0, drop_last=True
         )
     while True:
         yield from loader
@@ -58,6 +58,8 @@ class TableDataset(Dataset):
         super().__init__()
         self.data_file = pd.read_csv(data_file)
         del self.data_file["Id"]
+        for column in self.data_file.columns:
+            self.data_file[column] = (self.data_file[column]-self.data_file[column].min()) / (self.data_file[column].max()-self.data_file[column].min())
 
         self.label = self.data_file.pop('Species')
         self.label = pd.get_dummies(self.label).values.tolist()

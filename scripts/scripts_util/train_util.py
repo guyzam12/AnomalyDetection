@@ -24,18 +24,23 @@ class TrainLoop:
         data,
         batch_size,
         lr,
+        log_interval,
+        lr_anneal_steps,
+        **kwargs,
     ):
         self.model = model
         self.diffusion = diffusion
         self.data = data
         self.batch_size = batch_size
         self.lr = lr
-        self.lr_anneal_steps = 10000
+        self.lr_anneal_steps = lr_anneal_steps
         self.opt = AdamW(self.model.parameters(), weight_decay=0.0001)
         self.criterion = th.nn.MSELoss()
         self.step = 0
         self.loss = 0
         self.loss_acc = th.tensor([])
+        self.steps_acc = th.tensor([])
+        self.log_interval = log_interval
 
 
     def run_loop(self):
@@ -53,15 +58,35 @@ class TrainLoop:
         self.loss = self.criterion(outputs, labels.float())
         self.loss.backward()
         self.opt.step()
-        if not self.step%10:
+        self.log_step()
+        if self.step % self.log_interval == 0:
             self.loss_acc = th.cat((self.loss_acc,th.unsqueeze(self.loss,dim=0)),dim=0)
-            self.log_step()
+            self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
             logger.dumpkvs()
 
     def loss_figure(self):
-        x,y = np.arange(len(self.loss_acc)),self.loss_acc.detach().numpy()
+        x,y = self.steps_acc.detach().numpy(),self.loss_acc.detach().numpy()
         plt.plot(x,y)
         plt.show()
+
+    def acc_figure(self):
+        total_samples = 0
+        acc = 0
+        acc_list = []
+        total_same_outputs = 0
+        for i in range(100):
+            batch,labels = next(self.data)
+            outputs = self.model(batch.float())
+            labels_argmax, outputs_argmax = th.argmax(labels,dim=1),th.argmax(outputs,dim=1)
+            same_outputs = th.sum(labels_argmax == outputs_argmax)
+            total_same_outputs += same_outputs
+            total_samples += self.batch_size
+            acc_list.append(total_same_outputs/total_samples)
+
+
+        plt.plot(np.arange(100),acc_list)
+        plt.show()
+
 
 
     def forward_backward(self, batch, cond):

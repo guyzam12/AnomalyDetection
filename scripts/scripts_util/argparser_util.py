@@ -9,6 +9,8 @@ def create_argparser():
         batch_size=1,
         log_interval=10,
         save_interval=10000,
+        lr=0.01,
+        lr_anneal_steps=1000,
     )
     defaults.update(model_defaults())
     defaults.update(diffusion_defaults())

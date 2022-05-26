@@ -26,6 +26,8 @@ from scripts_util.table_dataset import (
 
 def main():
     args = create_argparser().parse_args()
+    args_defaults_keys = args_to_dict(args,args.__dict__).keys()
+    #args_defualts_keys = args_to_dict(args)
     #dist_util.setup_dist() #TODO
     logger.configure()
     model_defaults_keys = model_defaults().keys()
@@ -38,12 +40,10 @@ def main():
         batch_size=args.batch_size,
     )
     logger.log("training...")
-    train_obj = train_util.TrainLoop(model=model_obj,diffusion=diffusion_obj,data=data,batch_size=args.batch_size,lr=0.001)
+    train_obj = train_util.TrainLoop(**args_to_dict(args,args_defaults_keys),model=model_obj,diffusion=diffusion_obj,data=data)
     train_obj.run_loop()
+    #train_obj.acc_figure()
     #train_obj.loss_figure()
-    #model = create_model(arg,model_and_diffusion_defaults())
-    #model, diffusion = create_model_and_diffusion(
-    #    **args_to_dict(args, model_and_diffusion_defaults().keys())
 
 
 

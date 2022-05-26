@@ -3,8 +3,12 @@ import torch.nn as nn
 import numpy as np
 
 
-def create_model(input_size=4,hidden1_size=100,hidden2_size=50,num_classes=3):
-
+def create_model(
+        hidden1_size=100,
+        input_size=4,
+        hidden2_size=50,
+        num_classes=3,
+):
     return SimpleNet(input_size,hidden1_size,hidden2_size,num_classes)
 
 

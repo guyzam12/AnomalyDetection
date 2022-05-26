@@ -3,14 +3,14 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="/datasets/Iris/Iris.csv">
+        <entry key="$APPLICATION_CONFIG_DIR$/scratches/Iris.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/logs/log-2022-05-22-18/progress.csv">
+        <entry key="/datasets/Iris/Iris.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
