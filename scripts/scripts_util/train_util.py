@@ -41,6 +41,7 @@ class TrainLoop:
         self.loss_acc = th.tensor([])
         self.steps_acc = th.tensor([])
         self.log_interval = log_interval
+        self.weights = np.ones(diffusion.num_timesteps)
 
 
     def run_loop(self):
@@ -50,19 +51,6 @@ class TrainLoop:
             batch,labels = next(self.data)
             self.run_step(batch, th.squeeze(labels))
             self.step += 1
-
-    def run_step(self, batch, labels):
-        #self.forward_backward(batch, cond)
-        self.opt.zero_grad()
-        outputs = self.model(batch.float())
-        self.loss = self.criterion(outputs, labels.float())
-        self.loss.backward()
-        self.opt.step()
-        self.log_step()
-        if self.step % self.log_interval == 0:
-            self.loss_acc = th.cat((self.loss_acc,th.unsqueeze(self.loss,dim=0)),dim=0)
-            self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
-            logger.dumpkvs()
 
     def loss_figure(self):
         x,y = self.steps_acc.detach().numpy(),self.loss_acc.detach().numpy()
@@ -82,49 +70,61 @@ class TrainLoop:
             total_same_outputs += same_outputs
             total_samples += self.batch_size
             acc_list.append(total_same_outputs/total_samples)
-
-
         plt.plot(np.arange(100),acc_list)
         plt.show()
 
 
+    def run_step(self, batch, labels):
+        self.forward_backward(batch, labels)
+        #self.opt.zero_grad()
+        # outputs = self.model(batch.float())
+        # #self.loss = self.criterion(outputs, labels.float())
+        # self.loss.backward()
+        self.opt.step()
+        if self.step % self.log_interval == 0:
+            self.log_step()
+            self.loss_acc = th.cat((self.loss_acc,th.unsqueeze(self.loss, dim=0)),dim=0)
+            self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
+            logger.dumpkvs()
 
-    def forward_backward(self, batch, cond):
+
+    def forward_backward(self, batch,labels):
         self.opt.zero_grad()
-        loss = self.criterion(batch, labels.float())
-        for i in range(0, batch.shape[0], self.microbatch):
-            micro = batch[i : i + self.microbatch].to(dist_util.dev())
-            micro_cond = {
-                k: v[i : i + self.microbatch].to(dist_util.dev())
-                for k, v in cond.items()
-            }
-            last_batch = (i + self.microbatch) >= batch.shape[0]
-            t, weights = self.schedule_sampler.sample(micro.shape[0], dist_util.dev())
+        #self.loss = self.criterion(batch, labels.float())
 
+        for i in range(0, batch.shape[0]):
+            t, weights = self.sample(batch.shape[0])
             compute_losses = functools.partial(
-                self.diffusion.training_losses,
-                self.ddp_model,
-                micro,
-                t,
-                model_kwargs=micro_cond,
-            )
-
-            if last_batch or not self.use_ddp:
-                losses = compute_losses()
-            else:
-                with self.ddp_model.no_sync():
-                    losses = compute_losses()
-
-            if isinstance(self.schedule_sampler, LossAwareSampler):
-                self.schedule_sampler.update_with_local_losses(
-                    t, losses["loss"].detach()
-                )
-
-            loss = (losses["loss"] * weights).mean()
+                 self.diffusion.training_losses,
+                 self.model,
+                 batch,
+                 t,
+             )
+            losses = compute_losses()
+            self.loss = (losses["loss"] * weights).mean()
             log_loss_dict(
-                self.diffusion, t, {k: v * weights for k, v in losses.items()}
+                 self.diffusion, t, {k: v * weights for k, v in losses.items()}
             )
-            self.mp_trainer.backward(loss)
+            self.loss.backward()
+
+    def sample(self, batch_size):
+        """
+        Importance-sample timesteps for a batch.
+
+        :param batch_size: the number of timesteps.
+        :param device: the torch device to save to.
+        :return: a tuple (timesteps, weights):
+                 - timesteps: a tensor of timestep indices.
+                 - weights: a tensor of weights to scale the resulting losses.
+        """
+        w = self.weights
+        p = w / np.sum(w)
+        indices_np = np.random.choice(len(p), size=(batch_size,), p=p)
+        indices = th.from_numpy(indices_np)
+        weights_np = 1 / (len(p) * p[indices_np])
+        weights = th.from_numpy(weights_np).float()
+        return indices, weights
+
 
     def _update_ema(self):
         for rate, params in zip(self.ema_rate, self.ema_params):
@@ -140,7 +140,7 @@ class TrainLoop:
 
     def log_step(self):
         logger.logkv("step", self.step)
-        logger.logkv("loss", self.loss)
+        #logger.logkv("loss", self.loss)
         #logger.logkv("samples", (self.step + self.resume_step + 1) * self.global_batch)
 
     def save(self):
@@ -213,3 +213,4 @@ def log_loss_dict(diffusion, ts, losses):
         for sub_t, sub_loss in zip(ts.cpu().numpy(), values.detach().cpu().numpy()):
             quartile = int(4 * sub_t / diffusion.num_timesteps)
             logger.logkv_mean(f"{key}_q{quartile}", sub_loss)
+

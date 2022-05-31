@@ -1,6 +1,7 @@
 """
 Train a diffusion model on tables.
 """
+
 import argparse
 from scripts_util.argparser_util import (
     create_argparser,
@@ -17,29 +18,29 @@ from scripts_util import (
 from scripts_util.table_dataset import (
     load_data,
 )
-# from scripts_util import (
-#     model_and_diffusion_defaults,
-#     create_model_and_diffusion,
-#     args_to_dict,
-#     add_dict_to_argparser,
-# )
 
 def main():
-    args = create_argparser().parse_args()
-    args_defaults_keys = args_to_dict(args,args.__dict__).keys()
-    #args_defualts_keys = args_to_dict(args)
+    defaults = dict(
+        data_file="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/Iris/Iris.csv",
+        batch_size=1,
+        log_interval=100,
+        save_interval=10000,
+        lr=0.01,
+        lr_anneal_steps=1000,
+    )
+    # Create argparser with default parameters
+    args = create_argparser(defaults).parse_args()
     #dist_util.setup_dist() #TODO
     logger.configure()
-    model_defaults_keys = model_defaults().keys()
-    diffusion_defaults_keys = diffusion_defaults().keys()
-    model_obj = model.create_model(**args_to_dict(args,model_defaults_keys))
-    diffusion_obj = diffusion.create_diffusion(**args_to_dict(args,diffusion_defaults_keys))
+    model_obj = model.create_model(**args_to_dict(args,model_defaults().keys()))
+    diffusion_obj = diffusion.create_diffusion(**args_to_dict(args,diffusion_defaults().keys()))
     logger.log("creating data loader...")
     data = load_data(
         data_file=args.data_file,
         batch_size=args.batch_size,
     )
     logger.log("training...")
+    args_defaults_keys = args_to_dict(args,args.__dict__).keys()
     train_obj = train_util.TrainLoop(**args_to_dict(args,args_defaults_keys),model=model_obj,diffusion=diffusion_obj,data=data)
     train_obj.run_loop()
     #train_obj.acc_figure()

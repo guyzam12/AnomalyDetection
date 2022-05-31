@@ -6,7 +6,7 @@ import blobfile as bf
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
 import torch as th
-
+from sklearn.preprocessing import StandardScaler
 
 def load_data(
         data_file="",
@@ -58,11 +58,13 @@ class TableDataset(Dataset):
         super().__init__()
         self.data_file = pd.read_csv(data_file)
         del self.data_file["Id"]
-        for column in self.data_file.columns:
-            self.data_file[column] = (self.data_file[column]-self.data_file[column].min()) / (self.data_file[column].max()-self.data_file[column].min())
-
         self.label = self.data_file.pop('Species')
         self.label = pd.get_dummies(self.label).values.tolist()
+        scaler = StandardScaler().fit(self.data_file)
+        self.data_file = scaler.transform(self.data_file)
+        # for column in self.data_file.columns:
+        #     self.data_file[column] = (self.data_file[column]-self.data_file[column].min()) / (self.data_file[column].max()-self.data_file[column].min())
+
 
 
     def __len__(self):
@@ -70,7 +72,7 @@ class TableDataset(Dataset):
 
     def __getitem__(self, idx):
         # return th.tensor(self.data_file.iloc[idx]),th.tensor(self.label.iloc[idx])
-        return th.tensor(self.data_file.iloc[idx]),th.tensor(self.label[idx])
+        return th.tensor(self.data_file[idx]),th.tensor(self.label[idx])
 
     def get_label(self,idx):
         return th.tensor(self.label[idx])

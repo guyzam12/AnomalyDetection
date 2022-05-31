@@ -1,20 +1,12 @@
 import argparse
 
-def create_argparser():
+def create_argparser(defaults):
     """
     High-level definitions
     """
-    defaults = dict(
-        data_file="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/Iris/Iris.csv",
-        batch_size=1,
-        log_interval=10,
-        save_interval=10000,
-        lr=0.01,
-        lr_anneal_steps=1000,
-    )
     defaults.update(model_defaults())
     defaults.update(diffusion_defaults())
-    parser = argparse.ArgumentParser() #Creating argument parser object
+    parser = argparse.ArgumentParser()
     add_dict_to_argparser(parser, defaults)
     return parser
 
@@ -25,9 +17,9 @@ def model_defaults():
     """
     mod_defaults = dict( ##TODO: Complete
         input_size = 4,
-        hidden1_size = 100,
-        hidden2_size=50,
-        num_classes=3,
+        hidden1_size = 500,
+        hidden2_size=100,
+        num_classes=4,
     )
     return mod_defaults
 

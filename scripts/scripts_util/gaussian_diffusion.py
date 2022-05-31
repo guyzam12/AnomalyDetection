@@ -768,7 +768,7 @@ class GaussianDiffusion:
             if self.loss_type == LossType.RESCALED_KL:
                 terms["loss"] *= self.num_timesteps
         elif self.loss_type == LossType.MSE or self.loss_type == LossType.RESCALED_MSE:
-            model_output = model(x_t, self._scale_timesteps(t), **model_kwargs)
+            model_output = model(x_t.float())
 
             if self.model_var_type in [
                 ModelVarType.LEARNED,
@@ -800,7 +800,7 @@ class GaussianDiffusion:
                 ModelMeanType.EPSILON: noise,
             }[self.model_mean_type]
             assert model_output.shape == target.shape == x_start.shape
-            terms["mse"] = mean_flat((target - model_output) ** 2)
+            terms["mse"] = self.mean_flat((target - model_output) ** 2)
             if "vb" in terms:
                 terms["loss"] = terms["mse"] + terms["vb"]
             else:
@@ -809,6 +809,12 @@ class GaussianDiffusion:
             raise NotImplementedError(self.loss_type)
 
         return terms
+
+    def mean_flat(self,tensor):
+        """
+        Take the mean over all non-batch dimensions.
+        """
+        return tensor.mean(dim=list(range(1, len(tensor.shape))))
 
     def _prior_bpd(self, x_start):
         """

@@ -24,6 +24,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/logs/log-2022-05-26-17/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-05-30-14/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-05-30-15/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
