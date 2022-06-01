@@ -21,12 +21,12 @@ from scripts_util.table_dataset import (
 
 def main():
     defaults = dict(
-        data_file="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/Iris/Iris.csv",
+        data_file="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/Iris/Iris_one_row.csv",
         batch_size=1,
         log_interval=100,
         save_interval=10000,
-        lr=0.01,
-        lr_anneal_steps=1000,
+        lr=0.0001,
+        lr_anneal_steps=5000,
     )
     # Create argparser with default parameters
     args = create_argparser(defaults).parse_args()
