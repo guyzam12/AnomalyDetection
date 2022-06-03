@@ -3,40 +3,43 @@ import torch.nn as nn
 import numpy as np
 import math
 
+
 def create_model(
-        input_size_x=4,
-        input_size_emb=32,
+        row_size=1,
+        emb_size=32,
         hidden1_size_x=64,
         hidden1_size_emb=64,
         res_input_size=64,
         res_output_size=64,
-        output_size=4,
 ):
-    return SimpleNet(input_size_x,hidden1_size_x,output_size,input_size_emb,hidden1_size_emb,res_input_size,res_output_size)
+    return SimpleNet(
+        row_size,
+        emb_size,
+        hidden1_size_x,
+        hidden1_size_emb,
+        res_input_size,
+        res_output_size
+    )
+
 
 
 class SimpleNet(nn.Module):
-
-    def __init__(self,input_size_x,hidden1_size_x,output_size,input_size_emb,hidden1_size_emb,res_input_size,res_output_size):
+    def __init__(
+            self,
+            row_size,
+            emb_size,
+            hidden1_size_x,
+            hidden1_size_emb,
+            res_input_size,
+            res_output_size
+    ):
         super().__init__()
         self.dtype = th.float32
-
-        self.input_blocks_x = nn.Linear(input_size_x,hidden1_size_x)
-        self.input_blocks_emb = nn.Linear(input_size_emb,hidden1_size_emb)
+        self.input_blocks_x = nn.Linear(row_size,hidden1_size_x)
+        self.input_blocks_emb = nn.Linear(emb_size,hidden1_size_emb)
         self.res_block = ResBlock(res_input_size,res_output_size)
-        self.output_blocks = nn.Linear(res_output_size,output_size)
+        self.output_blocks = nn.Linear(res_output_size,row_size)
         self.relu = nn.ReLU()
-
-    # def forward(self, x):
-    #     out = self.fc1(x)
-    #     #out = self.bn1(out)
-    #     out = self.relu1(out)
-    #     out = self.fc2(out)
-    #     out = self.relu2(out)
-    #     out = self.fc3(out)
-    #     out = self.relu3(out)
-    #     out = self.fc4(out)
-    #     return out
 
     def forward(self, x, timesteps):
         """
@@ -46,7 +49,6 @@ class SimpleNet(nn.Module):
         :param timesteps: a 1-D batch of timesteps.
         :return: an [N x ...] Tensor of outputs.
         """
-        hs = []
         emb = timestep_embedding(timesteps, 32)
         x_out = self.input_blocks_x(x.float())
         emb_out = self.input_blocks_emb(emb)
@@ -75,7 +77,6 @@ def timestep_embedding(timesteps, dim, max_period=10000):
     if dim % 2:
         embedding = th.cat([embedding, th.zeros_like(embedding[:, :1])], dim=-1)
     return embedding
-
 
 
 class ResBlock(nn.Module):

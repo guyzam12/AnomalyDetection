@@ -1,0 +1,13 @@
+Logging to /Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/logs/log-2022-06-01-19
+creating model and diffusion...
+sampling...
+created 1 samples
+created 2 samples
+created 3 samples
+created 4 samples
+created 5 samples
+created 6 samples
+created 7 samples
+created 8 samples
+created 9 samples
+created 10 samples

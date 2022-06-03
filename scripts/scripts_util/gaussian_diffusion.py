@@ -393,7 +393,6 @@ class GaussianDiffusion:
         t,
         clip_denoised=True,
         denoised_fn=None,
-        cond_fn=None,
         model_kwargs=None,
     ):
         """
@@ -425,10 +424,6 @@ class GaussianDiffusion:
         nonzero_mask = (
             (t != 0).float().view(-1, *([1] * (len(x.shape) - 1)))
         )  # no noise when t == 0
-        if cond_fn is not None:
-            out["mean"] = self.condition_mean(
-                cond_fn, out, x, t, model_kwargs=model_kwargs
-            )
         sample = out["mean"] + nonzero_mask * th.exp(0.5 * out["log_variance"]) * noise
         return {"sample": sample, "pred_xstart": out["pred_xstart"]}
 
@@ -436,13 +431,10 @@ class GaussianDiffusion:
         self,
         model,
         shape,
-        noise=None,
         clip_denoised=True,
         denoised_fn=None,
         cond_fn=None,
         model_kwargs=None,
-        device=None,
-        progress=False,
     ):
         """
         Generate samples from the model.
@@ -467,13 +459,10 @@ class GaussianDiffusion:
         for sample in self.p_sample_loop_progressive(
             model,
             shape,
-            noise=noise,
             clip_denoised=clip_denoised,
             denoised_fn=denoised_fn,
             cond_fn=cond_fn,
             model_kwargs=model_kwargs,
-            device=device,
-            progress=progress,
         ):
             final = sample
         return final["sample"]
@@ -482,13 +471,10 @@ class GaussianDiffusion:
         self,
         model,
         shape,
-        noise=None,
         clip_denoised=True,
         denoised_fn=None,
         cond_fn=None,
         model_kwargs=None,
-        device=None,
-        progress=False,
     ):
         """
         Generate samples from the model and yield intermediate samples from
@@ -498,35 +484,22 @@ class GaussianDiffusion:
         Returns a generator over dicts, where each dict is the return value of
         p_sample().
         """
-        if device is None:
-            device = next(model.parameters()).device
-        assert isinstance(shape, (tuple, list))
-        if noise is not None:
-            img = noise
-        else:
-            img = th.randn(*shape, device=device)
+        row = th.randn(*shape)
         indices = list(range(self.num_timesteps))[::-1]
 
-        if progress:
-            # Lazy import so that we don't depend on tqdm.
-            from tqdm.auto import tqdm
-
-            indices = tqdm(indices)
-
         for i in indices:
-            t = th.tensor([i] * shape[0], device=device)
+            t = th.tensor([i] * shape[0])
             with th.no_grad():
                 out = self.p_sample(
                     model,
-                    img,
+                    row,
                     t,
                     clip_denoised=clip_denoised,
                     denoised_fn=denoised_fn,
-                    cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
                 )
                 yield out
-                img = out["sample"]
+                row = out["sample"]
 
     def ddim_sample(
         self,
