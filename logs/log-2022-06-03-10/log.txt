@@ -1,420 +1,103 @@
 Logging to /Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/logs/log-2022-06-03-10
 creating model and diffusion...
-creating data loader...
-training...
-----------------------
-| loss    | 1.21     |
-| loss_q0 | 1.25     |
-| loss_q1 | 1.09     |
-| loss_q2 | 1.19     |
-| loss_q3 | 1.27     |
-| mse     | 1.21     |
-| mse_q0  | 1.25     |
-| mse_q1  | 1.09     |
-| mse_q2  | 1.19     |
-| mse_q3  | 1.27     |
-| step    | 0        |
-----------------------
-----------------------
-| loss    | 0.422    |
-| loss_q0 | 0.641    |
-| loss_q1 | 0.369    |
-| loss_q2 | 0.347    |
-| loss_q3 | 0.346    |
-| mse     | 0.422    |
-| mse_q0  | 0.641    |
-| mse_q1  | 0.369    |
-| mse_q2  | 0.347    |
-| mse_q3  | 0.346    |
-| step    | 100      |
-----------------------
-----------------------
-| loss    | 0.0999   |
-| loss_q0 | 0.331    |
-| loss_q1 | 0.0185   |
-| loss_q2 | 0.0235   |
-| loss_q3 | 0.0234   |
-| mse     | 0.0999   |
-| mse_q0  | 0.331    |
-| mse_q1  | 0.0185   |
-| mse_q2  | 0.0235   |
-| mse_q3  | 0.0234   |
-| step    | 200      |
-----------------------
-----------------------
-| loss    | 0.0853   |
-| loss_q0 | 0.289    |
-| loss_q1 | 0.017    |
-| loss_q2 | 0.0208   |
-| loss_q3 | 0.0208   |
-| mse     | 0.0853   |
-| mse_q0  | 0.289    |
-| mse_q1  | 0.017    |
-| mse_q2  | 0.0208   |
-| mse_q3  | 0.0208   |
-| step    | 300      |
-----------------------
-----------------------
-| loss    | 0.0821   |
-| loss_q0 | 0.265    |
-| loss_q1 | 0.0168   |
-| loss_q2 | 0.0189   |
-| loss_q3 | 0.0193   |
-| mse     | 0.0821   |
-| mse_q0  | 0.265    |
-| mse_q1  | 0.0168   |
-| mse_q2  | 0.0189   |
-| mse_q3  | 0.0193   |
-| step    | 400      |
-----------------------
-----------------------
-| loss    | 0.0694   |
-| loss_q0 | 0.228    |
-| loss_q1 | 0.0166   |
-| loss_q2 | 0.0174   |
-| loss_q3 | 0.018    |
-| mse     | 0.0694   |
-| mse_q0  | 0.228    |
-| mse_q1  | 0.0166   |
-| mse_q2  | 0.0174   |
-| mse_q3  | 0.018    |
-| step    | 500      |
-----------------------
-----------------------
-| loss    | 0.0675   |
-| loss_q0 | 0.218    |
-| loss_q1 | 0.015    |
-| loss_q2 | 0.0155   |
-| loss_q3 | 0.0159   |
-| mse     | 0.0675   |
-| mse_q0  | 0.218    |
-| mse_q1  | 0.015    |
-| mse_q2  | 0.0155   |
-| mse_q3  | 0.0159   |
-| step    | 600      |
-----------------------
-----------------------
-| loss    | 0.0603   |
-| loss_q0 | 0.2      |
-| loss_q1 | 0.0131   |
-| loss_q2 | 0.0142   |
-| loss_q3 | 0.0149   |
-| mse     | 0.0603   |
-| mse_q0  | 0.2      |
-| mse_q1  | 0.0131   |
-| mse_q2  | 0.0142   |
-| mse_q3  | 0.0149   |
-| step    | 700      |
-----------------------
-----------------------
-| loss    | 0.0509   |
-| loss_q0 | 0.167    |
-| loss_q1 | 0.0116   |
-| loss_q2 | 0.0131   |
-| loss_q3 | 0.014    |
-| mse     | 0.0509   |
-| mse_q0  | 0.167    |
-| mse_q1  | 0.0116   |
-| mse_q2  | 0.0131   |
-| mse_q3  | 0.014    |
-| step    | 800      |
-----------------------
-----------------------
-| loss    | 0.0503   |
-| loss_q0 | 0.163    |
-| loss_q1 | 0.011    |
-| loss_q2 | 0.0127   |
-| loss_q3 | 0.0134   |
-| mse     | 0.0503   |
-| mse_q0  | 0.163    |
-| mse_q1  | 0.011    |
-| mse_q2  | 0.0127   |
-| mse_q3  | 0.0134   |
-| step    | 900      |
-----------------------
-----------------------
-| loss    | 0.0495   |
-| loss_q0 | 0.16     |
-| loss_q1 | 0.011    |
-| loss_q2 | 0.0127   |
-| loss_q3 | 0.0129   |
-| mse     | 0.0495   |
-| mse_q0  | 0.16     |
-| mse_q1  | 0.011    |
-| mse_q2  | 0.0127   |
-| mse_q3  | 0.0129   |
-| step    | 1e+03    |
-----------------------
-----------------------
-| loss    | 0.0465   |
-| loss_q0 | 0.148    |
-| loss_q1 | 0.0105   |
-| loss_q2 | 0.0118   |
-| loss_q3 | 0.0123   |
-| mse     | 0.0465   |
-| mse_q0  | 0.148    |
-| mse_q1  | 0.0105   |
-| mse_q2  | 0.0118   |
-| mse_q3  | 0.0123   |
-| step    | 1.1e+03  |
-----------------------
-----------------------
-| loss    | 0.0444   |
-| loss_q0 | 0.143    |
-| loss_q1 | 0.0104   |
-| loss_q2 | 0.0118   |
-| loss_q3 | 0.0115   |
-| mse     | 0.0444   |
-| mse_q0  | 0.143    |
-| mse_q1  | 0.0104   |
-| mse_q2  | 0.0118   |
-| mse_q3  | 0.0115   |
-| step    | 1.2e+03  |
-----------------------
-----------------------
-| loss    | 0.0419   |
-| loss_q0 | 0.134    |
-| loss_q1 | 0.0102   |
-| loss_q2 | 0.0108   |
-| loss_q3 | 0.0114   |
-| mse     | 0.0419   |
-| mse_q0  | 0.134    |
-| mse_q1  | 0.0102   |
-| mse_q2  | 0.0108   |
-| mse_q3  | 0.0114   |
-| step    | 1.3e+03  |
-----------------------
-----------------------
-| loss    | 0.0417   |
-| loss_q0 | 0.138    |
-| loss_q1 | 0.0095   |
-| loss_q2 | 0.0105   |
-| loss_q3 | 0.011    |
-| mse     | 0.0417   |
-| mse_q0  | 0.138    |
-| mse_q1  | 0.0095   |
-| mse_q2  | 0.0105   |
-| mse_q3  | 0.011    |
-| step    | 1.4e+03  |
-----------------------
-----------------------
-| loss    | 0.0358   |
-| loss_q0 | 0.114    |
-| loss_q1 | 0.00977  |
-| loss_q2 | 0.0105   |
-| loss_q3 | 0.0102   |
-| mse     | 0.0358   |
-| mse_q0  | 0.114    |
-| mse_q1  | 0.00977  |
-| mse_q2  | 0.0105   |
-| mse_q3  | 0.0102   |
-| step    | 1.5e+03  |
-----------------------
-----------------------
-| loss    | 0.0364   |
-| loss_q0 | 0.117    |
-| loss_q1 | 0.00927  |
-| loss_q2 | 0.00974  |
-| loss_q3 | 0.01     |
-| mse     | 0.0364   |
-| mse_q0  | 0.117    |
-| mse_q1  | 0.00927  |
-| mse_q2  | 0.00974  |
-| mse_q3  | 0.01     |
-| step    | 1.6e+03  |
-----------------------
-----------------------
-| loss    | 0.0346   |
-| loss_q0 | 0.108    |
-| loss_q1 | 0.00911  |
-| loss_q2 | 0.00912  |
-| loss_q3 | 0.00969  |
-| mse     | 0.0346   |
-| mse_q0  | 0.108    |
-| mse_q1  | 0.00911  |
-| mse_q2  | 0.00912  |
-| mse_q3  | 0.00969  |
-| step    | 1.7e+03  |
-----------------------
-----------------------
-| loss    | 0.0366   |
-| loss_q0 | 0.119    |
-| loss_q1 | 0.00858  |
-| loss_q2 | 0.009    |
-| loss_q3 | 0.00929  |
-| mse     | 0.0366   |
-| mse_q0  | 0.119    |
-| mse_q1  | 0.00858  |
-| mse_q2  | 0.009    |
-| mse_q3  | 0.00929  |
-| step    | 1.8e+03  |
-----------------------
-----------------------
-| loss    | 0.0323   |
-| loss_q0 | 0.104    |
-| loss_q1 | 0.0084   |
-| loss_q2 | 0.00868  |
-| loss_q3 | 0.00859  |
-| mse     | 0.0323   |
-| mse_q0  | 0.104    |
-| mse_q1  | 0.0084   |
-| mse_q2  | 0.00868  |
-| mse_q3  | 0.00859  |
-| step    | 1.9e+03  |
-----------------------
-----------------------
-| loss    | 0.0293   |
-| loss_q0 | 0.0911   |
-| loss_q1 | 0.00811  |
-| loss_q2 | 0.00794  |
-| loss_q3 | 0.0082   |
-| mse     | 0.0293   |
-| mse_q0  | 0.0911   |
-| mse_q1  | 0.00811  |
-| mse_q2  | 0.00794  |
-| mse_q3  | 0.0082   |
-| step    | 2e+03    |
-----------------------
-----------------------
-| loss    | 0.0306   |
-| loss_q0 | 0.101    |
-| loss_q1 | 0.00791  |
-| loss_q2 | 0.00789  |
-| loss_q3 | 0.00791  |
-| mse     | 0.0306   |
-| mse_q0  | 0.101    |
-| mse_q1  | 0.00791  |
-| mse_q2  | 0.00789  |
-| mse_q3  | 0.00791  |
-| step    | 2.1e+03  |
-----------------------
-----------------------
-| loss    | 0.03     |
-| loss_q0 | 0.0947   |
-| loss_q1 | 0.00776  |
-| loss_q2 | 0.00777  |
-| loss_q3 | 0.00749  |
-| mse     | 0.03     |
-| mse_q0  | 0.0947   |
-| mse_q1  | 0.00776  |
-| mse_q2  | 0.00777  |
-| mse_q3  | 0.00749  |
-| step    | 2.2e+03  |
-----------------------
-----------------------
-| loss    | 0.0293   |
-| loss_q0 | 0.0976   |
-| loss_q1 | 0.00719  |
-| loss_q2 | 0.00718  |
-| loss_q3 | 0.00755  |
-| mse     | 0.0293   |
-| mse_q0  | 0.0976   |
-| mse_q1  | 0.00719  |
-| mse_q2  | 0.00718  |
-| mse_q3  | 0.00755  |
-| step    | 2.3e+03  |
-----------------------
-----------------------
-| loss    | 0.0257   |
-| loss_q0 | 0.0831   |
-| loss_q1 | 0.00701  |
-| loss_q2 | 0.00701  |
-| loss_q3 | 0.00699  |
-| mse     | 0.0257   |
-| mse_q0  | 0.0831   |
-| mse_q1  | 0.00701  |
-| mse_q2  | 0.00701  |
-| mse_q3  | 0.00699  |
-| step    | 2.4e+03  |
-----------------------
-----------------------
-| loss    | 0.0278   |
-| loss_q0 | 0.0895   |
-| loss_q1 | 0.00709  |
-| loss_q2 | 0.00681  |
-| loss_q3 | 0.00709  |
-| mse     | 0.0278   |
-| mse_q0  | 0.0895   |
-| mse_q1  | 0.00709  |
-| mse_q2  | 0.00681  |
-| mse_q3  | 0.00709  |
-| step    | 2.5e+03  |
-----------------------
-----------------------
-| loss    | 0.0261   |
-| loss_q0 | 0.0824   |
-| loss_q1 | 0.00715  |
-| loss_q2 | 0.0064   |
-| loss_q3 | 0.00638  |
-| mse     | 0.0261   |
-| mse_q0  | 0.0824   |
-| mse_q1  | 0.00715  |
-| mse_q2  | 0.0064   |
-| mse_q3  | 0.00638  |
-| step    | 2.6e+03  |
-----------------------
-----------------------
-| loss    | 0.0247   |
-| loss_q0 | 0.0825   |
-| loss_q1 | 0.00657  |
-| loss_q2 | 0.00629  |
-| loss_q3 | 0.00645  |
-| mse     | 0.0247   |
-| mse_q0  | 0.0825   |
-| mse_q1  | 0.00657  |
-| mse_q2  | 0.00629  |
-| mse_q3  | 0.00645  |
-| step    | 2.7e+03  |
-----------------------
-----------------------
-| loss    | 0.0251   |
-| loss_q0 | 0.0812   |
-| loss_q1 | 0.00651  |
-| loss_q2 | 0.00581  |
-| loss_q3 | 0.00617  |
-| mse     | 0.0251   |
-| mse_q0  | 0.0812   |
-| mse_q1  | 0.00651  |
-| mse_q2  | 0.00581  |
-| mse_q3  | 0.00617  |
-| step    | 2.8e+03  |
-----------------------
-----------------------
-| loss    | 0.0247   |
-| loss_q0 | 0.0806   |
-| loss_q1 | 0.00614  |
-| loss_q2 | 0.00558  |
-| loss_q3 | 0.00579  |
-| mse     | 0.0247   |
-| mse_q0  | 0.0806   |
-| mse_q1  | 0.00614  |
-| mse_q2  | 0.00558  |
-| mse_q3  | 0.00579  |
-| step    | 2.9e+03  |
-----------------------
-----------------------
-| loss    | 0.0227   |
-| loss_q0 | 0.0741   |
-| loss_q1 | 0.00586  |
-| loss_q2 | 0.0057   |
-| loss_q3 | 0.00579  |
-| mse     | 0.0227   |
-| mse_q0  | 0.0741   |
-| mse_q1  | 0.00586  |
-| mse_q2  | 0.0057   |
-| mse_q3  | 0.00579  |
-| step    | 3e+03    |
-----------------------
-----------------------
-| loss    | 0.0232   |
-| loss_q0 | 0.0762   |
-| loss_q1 | 0.00585  |
-| loss_q2 | 0.0053   |
-| loss_q3 | 0.00541  |
-| mse     | 0.0232   |
-| mse_q0  | 0.0762   |
-| mse_q1  | 0.00585  |
-| mse_q2  | 0.0053   |
-| mse_q3  | 0.00541  |
-| step    | 3.1e+03  |
-----------------------
+sampling...
+created 1 samples
+created 2 samples
+created 3 samples
+created 4 samples
+created 5 samples
+created 6 samples
+created 7 samples
+created 8 samples
+created 9 samples
+created 10 samples
+created 11 samples
+created 12 samples
+created 13 samples
+created 14 samples
+created 15 samples
+created 16 samples
+created 17 samples
+created 18 samples
+created 19 samples
+created 20 samples
+created 21 samples
+created 22 samples
+created 23 samples
+created 24 samples
+created 25 samples
+created 26 samples
+created 27 samples
+created 28 samples
+created 29 samples
+created 30 samples
+created 31 samples
+created 32 samples
+created 33 samples
+created 34 samples
+created 35 samples
+created 36 samples
+created 37 samples
+created 38 samples
+created 39 samples
+created 40 samples
+created 41 samples
+created 42 samples
+created 43 samples
+created 44 samples
+created 45 samples
+created 46 samples
+created 47 samples
+created 48 samples
+created 49 samples
+created 50 samples
+created 51 samples
+created 52 samples
+created 53 samples
+created 54 samples
+created 55 samples
+created 56 samples
+created 57 samples
+created 58 samples
+created 59 samples
+created 60 samples
+created 61 samples
+created 62 samples
+created 63 samples
+created 64 samples
+created 65 samples
+created 66 samples
+created 67 samples
+created 68 samples
+created 69 samples
+created 70 samples
+created 71 samples
+created 72 samples
+created 73 samples
+created 74 samples
+created 75 samples
+created 76 samples
+created 77 samples
+created 78 samples
+created 79 samples
+created 80 samples
+created 81 samples
+created 82 samples
+created 83 samples
+created 84 samples
+created 85 samples
+created 86 samples
+created 87 samples
+created 88 samples
+created 89 samples
+created 90 samples
+created 91 samples
+created 92 samples
+created 93 samples
+created 94 samples
+created 95 samples
+created 96 samples
+created 97 samples
+created 98 samples
+created 99 samples
+created 100 samples

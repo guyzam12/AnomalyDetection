@@ -34,7 +34,7 @@ class TrainLoop:
         self.batch_size = batch_size
         self.lr = lr
         self.lr_anneal_steps = lr_anneal_steps
-        self.opt = AdamW(self.model.parameters(), weight_decay=0.0001)
+        self.opt = AdamW(self.model.parameters(), weight_decay=0.001)
         self.criterion = th.nn.MSELoss()
         self.step = 0
         self.loss = 0
@@ -48,8 +48,8 @@ class TrainLoop:
         while (
             self.step < self.lr_anneal_steps
         ):
-            batch,labels = next(self.data)
-            self.run_step(batch, th.squeeze(labels))
+            batch = next(self.data)
+            self.run_step(batch)
             self.step += 1
 
     def loss_figure(self):
@@ -74,8 +74,8 @@ class TrainLoop:
         plt.show()
 
 
-    def run_step(self, batch, labels):
-        self.forward_backward(batch, labels)
+    def run_step(self, batch):
+        self.forward_backward(batch)
         #self.opt.zero_grad()
         # outputs = self.model(batch.float())
         # #self.loss = self.criterion(outputs, labels.float())
@@ -88,7 +88,7 @@ class TrainLoop:
             logger.dumpkvs()
 
 
-    def forward_backward(self, batch,labels):
+    def forward_backward(self, batch):
         self.opt.zero_grad()
         #self.loss = self.criterion(batch, labels.float())
 

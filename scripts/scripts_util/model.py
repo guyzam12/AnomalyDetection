@@ -7,10 +7,10 @@ import math
 def create_model(
         row_size=1,
         emb_size=32,
-        hidden1_size_x=64,
-        hidden1_size_emb=64,
-        res_input_size=64,
-        res_output_size=64,
+        hidden1_size_x=32,
+        hidden1_size_emb=32,
+        res_input_size=32,
+        res_output_size=32,
 ):
     return SimpleNet(
         row_size,
@@ -35,6 +35,7 @@ class SimpleNet(nn.Module):
     ):
         super().__init__()
         self.dtype = th.float32
+        self.emb_size = emb_size
         self.input_blocks_x = nn.Linear(row_size,hidden1_size_x)
         self.input_blocks_emb = nn.Linear(emb_size,hidden1_size_emb)
         self.res_block = ResBlock(res_input_size,res_output_size)
@@ -49,7 +50,7 @@ class SimpleNet(nn.Module):
         :param timesteps: a 1-D batch of timesteps.
         :return: an [N x ...] Tensor of outputs.
         """
-        emb = timestep_embedding(timesteps, 32)
+        emb = timestep_embedding(timesteps, self.emb_size)
         x_out = self.input_blocks_x(x.float())
         emb_out = self.input_blocks_emb(emb)
         out = self.res_block(x_out,emb_out)
@@ -104,7 +105,7 @@ class ResBlock(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             nn.ReLU(),
-            nn.Linear(input_size, output_size)
+            nn.Linear(input_size, output_size),
         )
 
     def forward(self, x, emb):

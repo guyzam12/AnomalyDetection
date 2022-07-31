@@ -23,13 +23,13 @@ from scripts_util.table_dataset import (
 
 def main():
     defaults = dict(
-        data_file="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/Iris/Iris_one_row.csv",
+        data_file="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/gaussian.csv",
         batch_size=1,
         row_size=1,
         log_interval=100,
-        save_interval=10000,
+        save_interval=1000,
         lr=0.0001,
-        lr_anneal_steps=50000,
+        lr_anneal_steps=10000,
     )
     # Create argparser with default parameters
     args = create_argparser(defaults).parse_args()
@@ -47,7 +47,7 @@ def main():
     args_defaults_keys = args_to_dict(args,args.__dict__).keys()
     train_obj = train_util.TrainLoop(**args_to_dict(args,args_defaults_keys),model=model_obj,diffusion=diffusion_obj,data=data)
     train_obj.run_loop()
-    th.save(model_obj.state_dict(),"/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/models/temp.pt")
+    th.save(model_obj.state_dict(),"/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/models/gaussian_v2.pt")
     #train_obj.acc_figure()
     #train_obj.loss_figure()
 

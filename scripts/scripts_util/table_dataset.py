@@ -57,23 +57,14 @@ class TableDataset(Dataset):
     ):
         super().__init__()
         self.data_file = pd.read_csv(data_file)
-        del self.data_file["Id"]
-        self.label = self.data_file.pop('Species')
-        self.label = pd.get_dummies(self.label).values.tolist()
-        #scaler = StandardScaler().fit(self.data_file)
-        #self.data_file = scaler.transform(self.data_file)
-        # for column in self.data_file.columns:
-        #     self.data_file[column] = (self.data_file[column]-self.data_file[column].min()) / (self.data_file[column].max()-self.data_file[column].min())
-
-
+        self.data_file = self.data_file.iloc[:,1:]
+        '''
+        del self.data_file['Id']
+        del self.data_file['Species']
+        '''
 
     def __len__(self):
         return th.tensor(len(self.data_file))
 
     def __getitem__(self, idx):
-        return th.tensor(self.data_file.iloc[idx]),th.tensor(self.label[idx])
-        #return th.tensor(self.data_file[idx]),th.tensor(self.label[idx])
-
-    def get_label(self,idx):
-        return th.tensor(self.label[idx])
-
+        return th.tensor(self.data_file.iloc[idx])
