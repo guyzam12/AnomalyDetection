@@ -31,28 +31,49 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/logs/log-2022-05-25-15/progress.csv">
+        <entry key="/datasets/gaussian_5samp.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/logs/log-2022-05-26-17/progress.csv">
+        <entry key="/datasets/gaussian_mu0_sigma1_1000samp_xyz.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/logs/log-2022-05-30-14/progress.csv">
+        <entry key="/datasets/temp.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/logs/log-2022-05-30-15/progress.csv">
+        <entry key="/experiments_final/5cols_4gauss.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-08-01-16/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-08-03-09/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-08-03-10/progress.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

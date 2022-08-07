@@ -6,11 +6,11 @@ import math
 
 def create_model(
         row_size=1,
-        emb_size=32,
-        hidden1_size_x=32,
-        hidden1_size_emb=32,
-        res_input_size=32,
-        res_output_size=32,
+        emb_size=64,
+        hidden1_size_x=64,
+        hidden1_size_emb=64,
+        res_input_size=64,
+        res_output_size=64,
 ):
     return SimpleNet(
         row_size,

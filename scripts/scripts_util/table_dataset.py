@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 
 def load_data(
         data_file="",
+        output_model_name="",
         batch_size=1,
         deterministic=False,
 ): #TODO: Replace description
@@ -37,6 +38,7 @@ def load_data(
     classes = None
     dataset = TableDataset(
         data_file,
+        output_model_name,
     )
     if deterministic:
         loader = DataLoader(
@@ -54,10 +56,16 @@ class TableDataset(Dataset):
     def __init__(
             self,
             data_file,
+            output_model_name,
     ):
         super().__init__()
-        self.data_file = pd.read_csv(data_file)
-        self.data_file = self.data_file.iloc[:,1:]
+        self.data_file = pd.read_csv(data_file,header=None)
+        self.data_file_mean_per_column = self.data_file.mean()
+        self.data_file_max_per_column = self.data_file.max()
+        self.data_file_min_per_column = self.data_file.min()
+        self.data_file.to_pickle(output_model_name.replace('.pt','.pkl'))
+        self.normalize_data()
+        #self.data_file = self.data_file.iloc[:,1:]
         '''
         del self.data_file['Id']
         del self.data_file['Species']
@@ -68,3 +76,7 @@ class TableDataset(Dataset):
 
     def __getitem__(self, idx):
         return th.tensor(self.data_file.iloc[idx])
+
+    def normalize_data(self):
+        self.data_file = (self.data_file - self.data_file_min_per_column)/\
+                         (self.data_file_max_per_column-self.data_file_min_per_column)
