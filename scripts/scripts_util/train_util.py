@@ -12,6 +12,7 @@ import pandas as pd
 
 import numpy as np
 import matplotlib.pyplot as plt
+import re
 
 INITIAL_LOG_LOSS_SCALE = 20.0
 
@@ -26,8 +27,13 @@ class TrainLoop:
         lr,
         log_interval,
         lr_anneal_steps,
+        save_interval,
+        output_model_name,
+        data_file,
         **kwargs,
     ):
+        self.data_file = pd.read_csv(data_file,header=None)
+        self.data_file = self.data_file[self.data_file.columns[:-1]]
         self.model = model
         self.diffusion = diffusion
         self.data = data
@@ -41,7 +47,9 @@ class TrainLoop:
         self.loss_acc = th.tensor([])
         self.steps_acc = th.tensor([])
         self.log_interval = log_interval
+        self.save_interval = save_interval
         self.weights = np.ones(diffusion.num_timesteps)
+        self.output_model_name = output_model_name
 
 
     def run_loop(self):
@@ -86,7 +94,14 @@ class TrainLoop:
             self.loss_acc = th.cat((self.loss_acc,th.unsqueeze(self.loss, dim=0)),dim=0)
             self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
             logger.dumpkvs()
+        if self.step % self.save_interval == 0 and self.step != 0:
+            if "_" in self.output_model_name:
+                self.output_model_name = re.sub(r"_.*.pt","_"+str(int(self.step/1000))+"kstep.pt",self.output_model_name)
+            else:
+                self.output_model_name = re.sub(r".pt","_"+str(int(self.step/1000))+"kstep.pt",self.output_model_name)
 
+            self.data_file.to_pickle(self.output_model_name.replace('.pt', '.pkl'))
+            th.save(self.model.state_dict(), self.output_model_name)
 
     def forward_backward(self, batch):
         self.opt.zero_grad()

@@ -59,3 +59,20 @@ def str2bool(v):
 
 def args_to_dict(args, keys):
     return {k: getattr(args, k) for k in keys}
+
+def update_args(args,table_train,table_sample):
+    if table_train:
+        args.output_model_name = '{}/models/{}.pt' \
+            .format(args.project_path,args.output_model_name)
+    elif table_sample:
+        args.output_samples_npz = '{}/generated_samples/{}_{}.npz'.format(
+            args.project_path,
+            args.load_model,
+            str(int(args.num_samples))+"samp"
+        )
+        args.load_model = '{}/models/{}.pt'.format(
+            args.project_path,
+            args.load_model
+        )
+        args.denorm_file = args.load_model.replace('.pt','.pkl')
+    return args

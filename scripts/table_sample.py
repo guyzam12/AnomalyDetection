@@ -11,6 +11,7 @@ from scripts_util.argparser_util import (
     model_defaults,
     diffusion_defaults,
     args_to_dict,
+    update_args,
     )
 from scripts_util import (
     logger,
@@ -25,7 +26,7 @@ from scripts_util.table_dataset import (
 
 def main():
     defaults = dict(
-        model_path="",
+        load_model="",
         denorm_file="",
         batch_size=1,
         row_size=1,
@@ -33,20 +34,20 @@ def main():
         save_interval=10000,
         lr=0.0001,
         lr_anneal_steps=5000,
-        num_samples=1000,
+        num_samples=100,
+        project_path="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion"
     )
     # Create argparser with default parameters
     args = create_argparser(defaults).parse_args()
-    args.output_samples_npz = '/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/generated_samples/{0}.npz'.format(args.model_path)
-    args.model_path = '/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/models/{0}.pt'.format(args.model_path)
-    args.denorm_file=args.model_path.replace('.pt','.pkl')
+    args = update_args(args, False, True)
+
     #defaults['denorm_file'] = defaults['model_path'].replace('.pt','.pkl')
     #dist_util.setup_dist() #TODO
     logger.configure()
     logger.log("creating model and diffusion...")
     model_obj = model.create_model(**args_to_dict(args, model_defaults().keys()))
     diffusion_obj = diffusion.create_diffusion(**args_to_dict(args,diffusion_defaults().keys()))
-    model_obj.load_state_dict(th.load(args.model_path))
+    model_obj.load_state_dict(th.load(args.load_model))
     model_obj.eval()
     logger.log("sampling...")
     all_rows = []
@@ -67,7 +68,7 @@ def main():
             model_kwargs=model_kwargs,
         )
 
-        sample = denorm_sample(sample,max_per_col,min_per_col)
+        sample = denorm_sample(sample,max_per_col,min_per_col,mean_per_col)
 
         all_rows.append(sample.numpy())
         logger.log(f"created {len(all_rows) * args.batch_size} samples")
@@ -75,8 +76,8 @@ def main():
     np.savez(args.output_samples_npz,all_rows)
 
 
-def denorm_sample(sample,max_per_col,min_per_col):
-    sample = sample*(max_per_col - min_per_col)+min_per_col
+def denorm_sample(sample,max_per_col,min_per_col,mean_per_col):
+    sample = sample*(max_per_col - min_per_col)+mean_per_col
     return sample
 
 if __name__ == "__main__":

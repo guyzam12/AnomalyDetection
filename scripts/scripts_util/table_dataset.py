@@ -60,11 +60,12 @@ class TableDataset(Dataset):
     ):
         super().__init__()
         self.data_file = pd.read_csv(data_file,header=None)
-        self.data_file_mean_per_column = self.data_file.mean()
-        self.data_file_max_per_column = self.data_file.max()
-        self.data_file_min_per_column = self.data_file.min()
-        self.data_file.to_pickle(output_model_name.replace('.pt','.pkl'))
-        self.normalize_data()
+        #self.data_file = self.data_file[self.data_file.iloc[:,-1] == 5]
+        self.data_file = self.data_file[self.data_file.columns[:-1]]
+        #self.data_file.to_pickle(output_model_name.replace('.pt','.pkl'))
+        self.norm_data_file = self.normalize_data()
+        print("hi")
+        #self.normalize_data()
         #self.data_file = self.data_file.iloc[:,1:]
         '''
         del self.data_file['Id']
@@ -72,11 +73,13 @@ class TableDataset(Dataset):
         '''
 
     def __len__(self):
-        return th.tensor(len(self.data_file))
+        return th.tensor(len(self.norm_data_file))
 
     def __getitem__(self, idx):
-        return th.tensor(self.data_file.iloc[idx])
+        return th.tensor(self.norm_data_file.iloc[idx])
 
     def normalize_data(self):
-        self.data_file = (self.data_file - self.data_file_min_per_column)/\
-                         (self.data_file_max_per_column-self.data_file_min_per_column)
+        mean_per_column = self.data_file.mean()
+        max_per_column = self.data_file.max()
+        min_per_column = self.data_file.min()
+        return (self.data_file - mean_per_column)/(max_per_column-min_per_column)

@@ -45,14 +45,14 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/temp.csv">
+        <entry key="/datasets/wheat.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/experiments_final/5cols_4gauss.csv">
+        <entry key="/datasets/winequality-white.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
