@@ -29,7 +29,7 @@ def main():
         output_model_name="",
         batch_size=16,
         row_size=0,
-        log_interval=100,
+        log_interval=200,
         save_interval=50000,
         lr=0.0001,
         lr_anneal_steps=500000,

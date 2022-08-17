@@ -24,6 +24,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/breast-cancer-unsupervised-ad.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/breast-cancer-unsupervised-ad_30col.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/gaussian.csv">
           <value>
             <Attribute>
@@ -39,6 +53,13 @@
           </value>
         </entry>
         <entry key="/datasets/gaussian_mu0_sigma1_1000samp_xyz.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/pen-local-unsupervised-ad.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

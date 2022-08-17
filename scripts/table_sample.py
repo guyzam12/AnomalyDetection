@@ -34,7 +34,7 @@ def main():
         save_interval=10000,
         lr=0.0001,
         lr_anneal_steps=5000,
-        num_samples=100,
+        num_samples=6000,
         project_path="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion"
     )
     # Create argparser with default parameters
@@ -53,9 +53,9 @@ def main():
     all_rows = []
     all_labels = []
     data_file = pd.read_pickle(args.denorm_file)
-    mean_per_col = th.tensor(data_file.mean())
-    max_per_col = th.tensor(data_file.max())
-    min_per_col = th.tensor(data_file.min())
+    mean_per_col = th.tensor(data_file.mean().values)
+    max_per_col = th.tensor(data_file.max().values)
+    min_per_col = th.tensor(data_file.min().values)
     while len(all_rows) * args.batch_size < args.num_samples:
         model_kwargs = {}
         sample_fn = (

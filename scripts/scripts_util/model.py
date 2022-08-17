@@ -4,6 +4,7 @@ import numpy as np
 import math
 
 
+
 def create_model(
         row_size=1,
         emb_size=64,
@@ -40,8 +41,14 @@ class SimpleNet(nn.Module):
         self.input_blocks_emb = nn.Linear(emb_size,hidden1_size_emb)
         self.res_block = ResBlock(res_input_size,res_output_size)
         self.output_blocks = nn.Linear(res_output_size,row_size)
-        self.relu = nn.LeakyReLU(0.1)
+        self.relu = nn.ReLU()
+        self.leaky_relu = nn.LeakyReLU(0.1)
         self.tanh = nn.Tanh()
+        self.linear128 = nn.Linear(128,128)
+        self.linear64 = nn.Linear(64,128)
+        self.dropout = nn.Dropout(0.1)
+        self.bn_x = nn.BatchNorm1d(hidden1_size_x)
+        self.bn_emb = nn.BatchNorm1d(hidden1_size_emb)
 
     def forward(self, x, timesteps):
         """
@@ -55,7 +62,8 @@ class SimpleNet(nn.Module):
         x_out = self.input_blocks_x(x.float())
         emb_out = self.input_blocks_emb(emb)
         out = self.res_block(x_out,emb_out)
-        out = self.relu(out)
+        out = self.leaky_relu(out)
+
         #out = self.res_block(out,emb_out)
         #out = self.relu(out)
         out = self.output_blocks(out)
@@ -109,6 +117,7 @@ class ResBlock(nn.Module):
     ):
         super().__init__()
         self.layers = nn.Sequential(
+            #nn.BatchNorm1d(input_size),
             nn.LeakyReLU(0.1),
             nn.Linear(input_size, output_size),
         )

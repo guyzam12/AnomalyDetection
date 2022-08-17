@@ -33,7 +33,7 @@ class TrainLoop:
         **kwargs,
     ):
         self.data_file = pd.read_csv(data_file,header=None)
-        self.data_file = self.data_file[self.data_file.columns[:-1]]
+        #self.data_file = self.data_file[self.data_file.columns[1:]]
         self.model = model
         self.diffusion = diffusion
         self.data = data
@@ -54,7 +54,7 @@ class TrainLoop:
 
     def run_loop(self):
         while (
-            self.step < self.lr_anneal_steps
+            self.step <= self.lr_anneal_steps
         ):
             batch = next(self.data)
             self.run_step(batch)

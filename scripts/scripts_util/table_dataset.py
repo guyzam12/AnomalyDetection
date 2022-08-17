@@ -61,7 +61,7 @@ class TableDataset(Dataset):
         super().__init__()
         self.data_file = pd.read_csv(data_file,header=None)
         #self.data_file = self.data_file[self.data_file.iloc[:,-1] == 5]
-        self.data_file = self.data_file[self.data_file.columns[:-1]]
+        #self.data_file = self.data_file[self.data_file.columns[1:]]
         #self.data_file.to_pickle(output_model_name.replace('.pt','.pkl'))
         self.norm_data_file = self.normalize_data()
         print("hi")
@@ -76,7 +76,7 @@ class TableDataset(Dataset):
         return th.tensor(len(self.norm_data_file))
 
     def __getitem__(self, idx):
-        return th.tensor(self.norm_data_file.iloc[idx])
+        return th.tensor(self.norm_data_file.iloc[idx].values)
 
     def normalize_data(self):
         mean_per_column = self.data_file.mean()
