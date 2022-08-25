@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 
 def load_data(
         data_file="",
+        output_model_name="",
         batch_size=1,
         deterministic=False,
 ): #TODO: Replace description
@@ -37,6 +38,7 @@ def load_data(
     classes = None
     dataset = TableDataset(
         data_file,
+        output_model_name,
     )
     if deterministic:
         loader = DataLoader(
@@ -54,26 +56,28 @@ class TableDataset(Dataset):
     def __init__(
             self,
             data_file,
+            output_model_name,
     ):
         super().__init__()
-        self.data_file = pd.read_csv(data_file)
-        del self.data_file["Id"]
-        self.label = self.data_file.pop('Species')
-        self.label = pd.get_dummies(self.label).values.tolist()
-        scaler = StandardScaler().fit(self.data_file)
-        self.data_file = scaler.transform(self.data_file)
-        # for column in self.data_file.columns:
-        #     self.data_file[column] = (self.data_file[column]-self.data_file[column].min()) / (self.data_file[column].max()-self.data_file[column].min())
-
-
+        self.data_file = pd.read_csv(data_file,header=None)
+        df = self.data_file
+        #df = df.drop(df[df.one>5].index | df[df.one<-5].index)
+        #df = df.drop(df[df.two>5].index | df[df.two<-5].index)
+        self.data_file = df
+        self.max_per_col = self.data_file.max()
+        self.min_per_col = self.data_file.min()
+        pkl = {'max_per_col': self.max_per_col, 'min_per_col': self.min_per_col}
+        pkldf = pd.DataFrame(data=pkl)
+        pkldf.to_pickle(output_model_name.replace('.pt', '.pkl'))
+        self.norm_data_file = self.normalize_data()
 
     def __len__(self):
-        return th.tensor(len(self.data_file))
+        return th.tensor(len(self.norm_data_file))
 
     def __getitem__(self, idx):
-        # return th.tensor(self.data_file.iloc[idx]),th.tensor(self.label.iloc[idx])
-        return th.tensor(self.data_file[idx]),th.tensor(self.label[idx])
+        return th.tensor(self.norm_data_file.iloc[idx].values)
 
-    def get_label(self,idx):
-        return th.tensor(self.label[idx])
-
+    def normalize_data(self):
+        norm_data_file = 2*(self.data_file - self.min_per_col)/(self.max_per_col-self.min_per_col) - 1
+        return norm_data_file
+        #return (self.data_file - min_per_column)/(max_per_column-min_per_column)

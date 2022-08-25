@@ -12,6 +12,7 @@ import pandas as pd
 
 import numpy as np
 import matplotlib.pyplot as plt
+import re
 
 INITIAL_LOG_LOSS_SCALE = 20.0
 
@@ -26,6 +27,8 @@ class TrainLoop:
         lr,
         log_interval,
         lr_anneal_steps,
+        save_interval,
+        output_model_name,
         **kwargs,
     ):
         self.model = model
@@ -41,15 +44,18 @@ class TrainLoop:
         self.loss_acc = th.tensor([])
         self.steps_acc = th.tensor([])
         self.log_interval = log_interval
+        self.save_interval = save_interval
         self.weights = np.ones(diffusion.num_timesteps)
+        self.output_model_name = output_model_name
+        self.load_model = kwargs['load_model']
 
 
     def run_loop(self):
         while (
-            self.step < self.lr_anneal_steps
+            self.step <= self.lr_anneal_steps
         ):
-            batch,labels = next(self.data)
-            self.run_step(batch, th.squeeze(labels))
+            batch = next(self.data)
+            self.run_step(batch)
             self.step += 1
 
     def loss_figure(self):
@@ -74,8 +80,8 @@ class TrainLoop:
         plt.show()
 
 
-    def run_step(self, batch, labels):
-        self.forward_backward(batch, labels)
+    def run_step(self, batch):
+        self.forward_backward(batch)
         #self.opt.zero_grad()
         # outputs = self.model(batch.float())
         # #self.loss = self.criterion(outputs, labels.float())
@@ -86,9 +92,18 @@ class TrainLoop:
             self.loss_acc = th.cat((self.loss_acc,th.unsqueeze(self.loss, dim=0)),dim=0)
             self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
             logger.dumpkvs()
+        if self.step % self.save_interval == 0 and self.step != 0:
+            self.save_model()
 
+    def save_model(self):
+        kstep = int(self.step / 1000)
+        if self.load_model != "":
+            load_kstep = int(re.search(r"(\d+)kstep",self.load_model).group(1))
+            kstep += load_kstep
+        output_model_name = re.sub(r".pt", "_" + str(kstep) + "kstep.pt", self.output_model_name)
+        th.save(self.model.state_dict(), output_model_name)
 
-    def forward_backward(self, batch,labels):
+    def forward_backward(self, batch):
         self.opt.zero_grad()
         #self.loss = self.criterion(batch, labels.float())
 

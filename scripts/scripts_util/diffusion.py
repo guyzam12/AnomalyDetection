@@ -21,7 +21,6 @@ def create_gaussian_diffusion(
 ):
     betas = gd.get_named_beta_schedule(noise_schedule, steps)
     loss_type = gd.LossType.MSE
-    steps = [i for i in range(steps)]
     return gd.GaussianDiffusion(
         betas=betas,
         model_mean_type=gd.ModelMeanType.EPSILON,

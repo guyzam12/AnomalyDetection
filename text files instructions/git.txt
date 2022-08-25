@@ -1,0 +1,5 @@
+## Instructions to push repo to git
+1) git status - to check what files to push
+2) git add . - to add all the edited files to farther commit
+3) git commit -m "<short explanation>" - in order to commit the file
+4) git push - to push the files to github.
