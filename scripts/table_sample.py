@@ -68,18 +68,15 @@ def main():
         )
 
         sample = denorm_sample(sample,max_per_col,min_per_col)
-
         all_rows.append(sample.numpy())
         logger.log(f"created {len(all_rows) * args.batch_size} samples")
 
     np.savez(args.output_samples_npz,all_rows)
 
-
 def denorm_sample(sample,max_per_col,min_per_col):
     sample = ((sample + 1) * 0.5*(max_per_col-min_per_col)) + min_per_col
     #sample = sample*(max_per_col - min_per_col)+mean_per_col
     return sample
-
 
 if __name__ == "__main__":
     main()

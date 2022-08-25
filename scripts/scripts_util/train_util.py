@@ -37,7 +37,7 @@ class TrainLoop:
         self.batch_size = batch_size
         self.lr = lr
         self.lr_anneal_steps = lr_anneal_steps
-        self.opt = AdamW(self.model.parameters(), weight_decay=0.0001)
+        self.opt = AdamW(self.model.parameters(), weight_decay=0.001)
         self.criterion = th.nn.MSELoss()
         self.step = 0
         self.loss = 0

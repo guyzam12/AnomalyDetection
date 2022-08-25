@@ -13,4 +13,10 @@ real,fake = load_data('/datasets/gaussian_5samp.csv', '/Users/guyzamberg/Pycharm
 fake = temp
 real.columns = [0,1,2,3,4]
 table_evaluator = TableEvaluator(real, fake)
+<<<<<<< HEAD
 table_evaluator.visual_evaluation()
+=======
+table_evaluator.visual_evaluation()
+#table_evaluator.evaluate(target_col=1)
+print("ho")
+>>>>>>> 52726769506eac2702c6f4fc047503fbe2a77baf
