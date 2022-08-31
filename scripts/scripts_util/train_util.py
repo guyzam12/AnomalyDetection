@@ -29,8 +29,11 @@ class TrainLoop:
         lr_anneal_steps,
         save_interval,
         output_model_name,
+        data_obj,
         **kwargs,
     ):
+        self.summary = [["Steps","Size","Top 500", "Top 1000", "Top 5000", "Top 10000","Top 50000"]]
+        self.data_obj = data_obj
         self.model = model
         self.diffusion = diffusion
         self.data = data
@@ -48,14 +51,16 @@ class TrainLoop:
         self.weights = np.ones(diffusion.num_timesteps)
         self.output_model_name = output_model_name
         self.load_model = kwargs['load_model']
-
+        self.kwargs = kwargs
+        self.loss_per_sample = th.zeros(len(self.data_obj),dtype=th.double)
+        self.occ_per_sample = th.zeros(len(self.data_obj))
 
     def run_loop(self):
         while (
             self.step <= self.lr_anneal_steps
         ):
-            batch = next(self.data)
-            self.run_step(batch)
+            batch,idx = next(self.data)
+            self.run_step(batch,idx)
             self.step += 1
 
     def loss_figure(self):
@@ -80,8 +85,8 @@ class TrainLoop:
         plt.show()
 
 
-    def run_step(self, batch):
-        self.forward_backward(batch)
+    def run_step(self, batch,idx):
+        self.forward_backward(batch,idx)
         #self.opt.zero_grad()
         # outputs = self.model(batch.float())
         # #self.loss = self.criterion(outputs, labels.float())
@@ -93,6 +98,44 @@ class TrainLoop:
             self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
             logger.dumpkvs()
         if self.step % self.save_interval == 0 and self.step != 0:
+            mask = self.occ_per_sample != 0
+            losses = th.zeros_like(self.loss_per_sample)
+            losses[mask] = self.loss_per_sample[mask]/self.occ_per_sample[mask]
+            #t1 = [losses[550],self.occ_per_sample[550]]
+            #t2 = [losses[2],self.occ_per_sample[2]]
+            #t = losses[510:560]
+            t1 = losses[[0,298]]
+            t2 = losses[[1,462]]
+            #t3 = losses[[6112,6113,6114,6115,6116,6117,6118,6119]]
+            #t = losses[[543,927,525,621,2953,95,3806,352]]
+            top10_val,top10_ind = th.topk(losses,10,0)
+            top20_val,top20_ind = th.topk(losses,20,0)
+            top50_val,top50_ind = th.topk(losses,50,0)
+            top100_val,top100_ind = th.topk(losses,100,0)
+            top1000_val,top1000_ind = th.topk(losses,1000,0)
+            labels10 = self.data_obj.get_labels(top10_ind.tolist())
+            labels20 = self.data_obj.get_labels(top20_ind.tolist())
+            labels50 = self.data_obj.get_labels(top50_ind.tolist())
+            labels100 = self.data_obj.get_labels(top100_ind.tolist())
+            labels1000 = self.data_obj.get_labels(top1000_ind.tolist())
+            s10,s20,s50,s100,s1000 = sum(labels10),sum(labels20),sum(labels50),sum(labels100),sum(labels1000)
+            self.summary.append([self.step,self.model.get_size(),s10,s20,s50,s100,s1000])
+            labels = self.data_obj.get_all_labels()
+            summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_summary.csv',self.output_model_name)
+            labels_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_labels.csv',self.output_model_name)
+            losses_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_losses.csv',self.output_model_name)
+            np.savetxt(losses_output_file_path,
+                       losses,
+                       delimiter=", ",
+                       fmt='%s')
+            np.savetxt(labels_output_file_path,
+                       labels,
+                       delimiter=", ",
+                       fmt='%s')
+            np.savetxt(summary_output_file_path,
+                       self.summary,
+                       delimiter=", ",
+                       fmt='%s')
             self.save_model()
 
     def save_model(self):
@@ -103,7 +146,7 @@ class TrainLoop:
         output_model_name = re.sub(r".pt", "_" + str(kstep) + "kstep.pt", self.output_model_name)
         th.save(self.model.state_dict(), output_model_name)
 
-    def forward_backward(self, batch):
+    def forward_backward(self, batch,idx):
         self.opt.zero_grad()
         #self.loss = self.criterion(batch, labels.float())
 
@@ -116,6 +159,10 @@ class TrainLoop:
                  t,
              )
             losses = compute_losses()
+            self.occ_per_sample[idx] += 1
+            #self.occ_per_sample[idx] = 1
+            #self.loss_per_sample[idx] = losses['loss'].detach()
+            self.loss_per_sample[idx] += losses['loss'].detach()
             self.loss = (losses["loss"] * weights).mean()
             log_loss_dict(
                  self.diffusion, t, {k: v * weights for k, v in losses.items()}
@@ -136,6 +183,7 @@ class TrainLoop:
         p = w / np.sum(w)
         indices_np = np.random.choice(len(p), size=(batch_size,), p=p)
         indices = th.from_numpy(indices_np)
+        #indices = 10*th.ones(8,dtype=int)
         weights_np = 1 / (len(p) * p[indices_np])
         weights = th.from_numpy(weights_np).float()
         return indices, weights

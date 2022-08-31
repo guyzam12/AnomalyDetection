@@ -4,13 +4,13 @@ import random
 import pandas as pd
 import blobfile as bf
 import numpy as np
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, BatchSampler
 import torch as th
 from sklearn.preprocessing import StandardScaler
+from torch.utils.data.sampler import Sampler
 
 def load_data(
-        data_file="",
-        output_model_name="",
+        data_obj,
         batch_size=1,
         deterministic=False,
 ): #TODO: Replace description
@@ -32,21 +32,16 @@ def load_data(
     :param random_crop: if True, randomly crop the images for augmentation.
     :param random_flip: if True, randomly flip the images for augmentation.
     """
-    if not data_file:
-        raise ValueError("unspecified data directory")
+    if not data_obj:
+        raise ValueError("unspecified data object")
 
-    classes = None
-    dataset = TableDataset(
-        data_file,
-        output_model_name,
-    )
     if deterministic:
         loader = DataLoader(
-            dataset, batch_size=batch_size, shuffle=False, num_workers=0, drop_last=True
+            data_obj, batch_size=batch_size, shuffle=False, num_workers=0, drop_last=True
         )
     else:
         loader = DataLoader(
-            dataset, batch_size=batch_size, shuffle=True, num_workers=0, drop_last=True
+            data_obj, batch_size=batch_size, shuffle=True, num_workers=0, drop_last=True
         )
     while True:
         yield from loader
@@ -59,13 +54,15 @@ class TableDataset(Dataset):
             output_model_name,
     ):
         super().__init__()
-        self.data_file = pd.read_csv(data_file,header=None)
+        self.data_file = pd.read_csv(data_file, header=None)
         df = self.data_file
-        #df = df.drop(df[df.one>5].index | df[df.one<-5].index)
-        #df = df.drop(df[df.two>5].index | df[df.two<-5].index)
+        #df = self.data_file.iloc[:,1:]
+        self.data_file_labels = df.iloc[:,-1]
+        df = df.iloc[:,:-1]
         self.data_file = df
         self.max_per_col = self.data_file.max()
         self.min_per_col = self.data_file.min()
+        self.mean_per_col = self.data_file.mean()
         pkl = {'max_per_col': self.max_per_col, 'min_per_col': self.min_per_col}
         pkldf = pd.DataFrame(data=pkl)
         pkldf.to_pickle(output_model_name.replace('.pt', '.pkl'))
@@ -75,9 +72,16 @@ class TableDataset(Dataset):
         return th.tensor(len(self.norm_data_file))
 
     def __getitem__(self, idx):
-        return th.tensor(self.norm_data_file.iloc[idx].values)
+        return th.tensor(self.norm_data_file.iloc[idx].values),idx
 
     def normalize_data(self):
         norm_data_file = 2*(self.data_file - self.min_per_col)/(self.max_per_col-self.min_per_col) - 1
         return norm_data_file
         #return (self.data_file - min_per_column)/(max_per_column-min_per_column)
+
+    def get_labels(self,idx):
+        return self.data_file_labels[idx]
+
+    def get_all_labels(self):
+        return self.data_file_labels
+

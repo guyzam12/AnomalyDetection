@@ -18,11 +18,11 @@ def model_defaults():
     """
     mod_defaults = dict( ##TODO: Complete
         row_size=1,
-        emb_size=128,
-        hidden1_size_x=256,
-        hidden1_size_emb=256,
-        res_input_size=256,
-        res_output_size=256,
+        emb_size=32,
+        hidden1_size_x=32,
+        hidden1_size_emb=32,
+        res_input_size=32,
+        res_output_size=32,
     )
     return mod_defaults
 

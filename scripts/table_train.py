@@ -20,6 +20,7 @@ from scripts_util import (
     )
 from scripts_util.table_dataset import (
     load_data,
+    TableDataset
 )
 
 
@@ -30,7 +31,7 @@ def main():
         batch_size=0,
         row_size=0,
         log_interval=200,
-        save_interval=50000,
+        save_interval=1000,
         lr=0.0001,
         lr_anneal_steps=1000000,
         load_model="",
@@ -54,18 +55,22 @@ def main():
         model_obj.load_state_dict(th.load(args.load_model))
     diffusion_obj = diffusion.create_diffusion(**args_to_dict(args,diffusion_defaults().keys()))
 
+    # Creating TableDataset
+    data_obj = TableDataset(
+        args.data_file,
+        args.output_model_name,
+    )
     # Creating of data loader
     logger.log("creating data loader...")
     data = load_data(
-        data_file=args.data_file,
+        data_obj=data_obj,
         batch_size=args.batch_size,
-        output_model_name=args.output_model_name,
     )
 
     # Training
     logger.log("training...")
     args_defaults_keys = args_to_dict(args,args.__dict__).keys()
-    train_obj = train_util.TrainLoop(**args_to_dict(args,args_defaults_keys),model=model_obj,diffusion=diffusion_obj,data=data)
+    train_obj = train_util.TrainLoop(**args_to_dict(args,args_defaults_keys),model=model_obj,diffusion=diffusion_obj,data=data,data_obj=data_obj)
     train_obj.run_loop()
 
     # Save model

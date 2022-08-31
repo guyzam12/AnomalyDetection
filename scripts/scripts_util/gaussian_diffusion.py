@@ -751,7 +751,6 @@ class GaussianDiffusion:
         """
         Take the mean over all non-batch dimensions.
         """
-        #temp = tensor.mean(dim=list(range(1, len(tensor.shape))))
         return tensor.mean(dim=list(range(1, len(tensor.shape))))
 
     def _prior_bpd(self, x_start):

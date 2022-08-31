@@ -59,9 +59,11 @@ class SimpleNet(nn.Module):
         :return: an [N x ...] Tensor of outputs.
         """
         emb = timestep_embedding(timesteps, self.emb_size)
+        #emb = 2*(emb - th.min(emb))/(th.max(emb)-th.min(emb)) - 1
         x_out = self.input_blocks_x(x.float())
         emb_out = self.input_blocks_emb(emb)
         out = self.res_block(x_out,emb_out)
+        #out = self.dropout(out)
         out = self.relu(out)
 
         #out = self.res_block(out,emb_out)
@@ -70,6 +72,9 @@ class SimpleNet(nn.Module):
         #out = self.relu(out)
         #out = self.tanh(out)
         return out
+
+    def get_size(self):
+        return self.emb_size
 
 
 def timestep_embedding(timesteps, dim, max_period=10000):

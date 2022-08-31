@@ -34,7 +34,7 @@ def main():
         save_interval=10000,
         lr=0.0001,
         lr_anneal_steps=5000,
-        num_samples=4000,
+        num_samples=100,
         project_path="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion"
     )
     # Create argparser with default parameters
