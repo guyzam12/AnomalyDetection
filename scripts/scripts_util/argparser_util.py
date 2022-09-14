@@ -18,11 +18,11 @@ def model_defaults():
     """
     mod_defaults = dict( ##TODO: Complete
         row_size=1,
-        emb_size=32,
-        hidden1_size_x=32,
-        hidden1_size_emb=32,
-        res_input_size=32,
-        res_output_size=32,
+        emb_size=512,
+        hidden1_size_x=512,
+        hidden1_size_emb=512,
+        res_input_size=512,
+        res_output_size=512,
     )
     return mod_defaults
 
@@ -32,7 +32,7 @@ def diffusion_defaults():
     Defaults for diffusion.
     """
     diff_defaults = dict( ##TODO: Complete
-        steps=1000,
+        steps=100,
     )
     return diff_defaults
 

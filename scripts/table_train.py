@@ -31,7 +31,7 @@ def main():
         batch_size=0,
         row_size=0,
         log_interval=200,
-        save_interval=1000,
+        save_interval=20000,
         lr=0.0001,
         lr_anneal_steps=1000000,
         load_model="",

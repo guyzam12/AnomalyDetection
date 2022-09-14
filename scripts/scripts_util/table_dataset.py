@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader, Dataset, BatchSampler
 import torch as th
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data.sampler import Sampler
+from sklearn.neighbors import NearestNeighbors
 
 def load_data(
         data_obj,
@@ -63,10 +64,12 @@ class TableDataset(Dataset):
         self.max_per_col = self.data_file.max()
         self.min_per_col = self.data_file.min()
         self.mean_per_col = self.data_file.mean()
+        self.std_per_col = self.data_file.std(ddof=0)
         pkl = {'max_per_col': self.max_per_col, 'min_per_col': self.min_per_col}
         pkldf = pd.DataFrame(data=pkl)
         pkldf.to_pickle(output_model_name.replace('.pt', '.pkl'))
         self.norm_data_file = self.normalize_data()
+        self.distances = self.knn()
 
     def __len__(self):
         return th.tensor(len(self.norm_data_file))
@@ -75,9 +78,35 @@ class TableDataset(Dataset):
         return th.tensor(self.norm_data_file.iloc[idx].values),idx
 
     def normalize_data(self):
+        #norm_data_file = (self.data_file - self.mean_per_col)/self.std_per_col
         norm_data_file = 2*(self.data_file - self.min_per_col)/(self.max_per_col-self.min_per_col) - 1
         return norm_data_file
         #return (self.data_file - min_per_column)/(max_per_column-min_per_column)
+
+    def knn(self):
+        df = self.norm_data_file
+        #nbrs = NearestNeighbors(n_neighbors=50)
+        #nbrs.fit(df)
+        #distances, indexes = nbrs.kneighbors(df)
+        #distances = pd.DataFrame(distances)
+        #distance_mean = th.zeros(distances.shape[0])
+        distances_mean = 0
+        count=0
+        for i in range(10,51):
+            nbrs = NearestNeighbors(n_neighbors=i)
+            nbrs.fit(df)
+            distances, indexes = nbrs.kneighbors(df)
+            distances_org = distances
+            distances = distances*np.exp(-distances/2)
+            distances = np.mean(distances,axis=1)
+            dist = distances
+            #dist = (dist - min(dist)) / (max(dist) - min(dist))
+            distances_mean += dist
+            count += 1
+        distances_mean /= count
+        #distances_mean = th.tensor(distances.iloc[:,1:].mean(axis=1))
+        distances_mean = (distances_mean - min(distances_mean))/(max(distances_mean)-min(distances_mean))
+        return th.tensor(distances_mean)
 
     def get_labels(self,idx):
         return self.data_file_labels[idx]
@@ -85,3 +114,5 @@ class TableDataset(Dataset):
     def get_all_labels(self):
         return self.data_file_labels
 
+    def get_distances(self):
+        return self.distances

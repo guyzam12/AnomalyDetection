@@ -3,7 +3,21 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="$APPLICATION_CONFIG_DIR$/scratches/Iris.csv">
+        <entry key="$APPLICATION_CONFIG_DIR$/scratches/a.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$APPLICATION_CONFIG_DIR$/scratches/b.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="$APPLICATION_CONFIG_DIR$/scratches/c.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -31,42 +45,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/aloi-unsupervised-ad_2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/b.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/banknote_authentication_dataset_5ones.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/credit_full_1024bit.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/credit_full_1024bit_labels.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/credit_full_128bit.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/credit_full_128bit_labels.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/credit_full_32bit.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -81,6 +74,27 @@
           </value>
         </entry>
         <entry key="/datasets/pen-local-unsupervised-ad.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/pen-local-unsupervised-ad_1.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/pen_1.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/r.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -123,20 +137,6 @@
           </value>
         </entry>
         <entry key="/experiments_final/7_8_22/5cols_4gauss.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/generated_samples/credit_full_1024bit_losses.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/generated_samples/credit_full_128bit_losses_1Msteps.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -193,6 +193,27 @@
           </value>
         </entry>
         <entry key="/logs/log-2022-08-04-18/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/credit_64bit_losses.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/credit_full_1024bit_losses.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/credit_full_128bit_losses_1Msteps.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

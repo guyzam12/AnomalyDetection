@@ -32,7 +32,8 @@ class TrainLoop:
         data_obj,
         **kwargs,
     ):
-        self.summary = [["Steps","Size","Top 500", "Top 1000", "Top 5000", "Top 10000","Top 50000"]]
+        self.summary = pd.DataFrame(columns=["Steps", "Size", "Top 10", "Top 20", "Top 50", "Top 100", "Top 1000"])
+        self.info = pd.DataFrame(columns=["Index", "Loss", "Distance"])
         self.data_obj = data_obj
         self.model = model
         self.diffusion = diffusion
@@ -101,42 +102,46 @@ class TrainLoop:
             mask = self.occ_per_sample != 0
             losses = th.zeros_like(self.loss_per_sample)
             losses[mask] = self.loss_per_sample[mask]/self.occ_per_sample[mask]
-            #t1 = [losses[550],self.occ_per_sample[550]]
-            #t2 = [losses[2],self.occ_per_sample[2]]
-            #t = losses[510:560]
-            t1 = losses[[0,298]]
-            t2 = losses[[1,462]]
-            #t3 = losses[[6112,6113,6114,6115,6116,6117,6118,6119]]
-            #t = losses[[543,927,525,621,2953,95,3806,352]]
-            top10_val,top10_ind = th.topk(losses,10,0)
-            top20_val,top20_ind = th.topk(losses,20,0)
-            top50_val,top50_ind = th.topk(losses,50,0)
-            top100_val,top100_ind = th.topk(losses,100,0)
-            top1000_val,top1000_ind = th.topk(losses,1000,0)
-            labels10 = self.data_obj.get_labels(top10_ind.tolist())
-            labels20 = self.data_obj.get_labels(top20_ind.tolist())
-            labels50 = self.data_obj.get_labels(top50_ind.tolist())
-            labels100 = self.data_obj.get_labels(top100_ind.tolist())
-            labels1000 = self.data_obj.get_labels(top1000_ind.tolist())
-            s10,s20,s50,s100,s1000 = sum(labels10),sum(labels20),sum(labels50),sum(labels100),sum(labels1000)
-            self.summary.append([self.step,self.model.get_size(),s10,s20,s50,s100,s1000])
+            losses = self.normalize(losses)
+            distances = self.data_obj.get_distances()
             labels = self.data_obj.get_all_labels()
+            ind = np.where(labels==1)[0]
+            dist_top1k,top_ind = th.topk(distances,50000)
+            distances = distances[ind]
+            los = losses[ind]
+            self.info['Index'] = pd.Series(ind)
+            self.info['Loss'] = pd.Series(los)
+            self.info['Distance'] = pd.Series(distances)
+
+            labels = th.tensor(labels)
+            los_top1k = losses[top_ind]
+            labels_top1k = labels[top_ind]
+            df = pd.DataFrame(columns=["Index","Labels","Loss","Distance"])
+            df["Index"] = pd.Series(top_ind)
+            df["Labels"] = pd.Series(labels_top1k)
+            df["Loss"] = pd.Series(los_top1k)
+            df["Distance"] = pd.Series(dist_top1k)
+            df_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_'+str(self.step)+'steps_summary.csv',self.output_model_name)
+            df.to_csv(df_output_file_path,index=False)
+            summary_line = self.create_summary_line(losses,labels,self.step,self.model.get_size(),[5,10,50,200,1000])
+            self.summary = self.summary.append(summary_line)
             summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_summary.csv',self.output_model_name)
-            labels_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_labels.csv',self.output_model_name)
-            losses_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_losses.csv',self.output_model_name)
-            np.savetxt(losses_output_file_path,
-                       losses,
-                       delimiter=", ",
-                       fmt='%s')
-            np.savetxt(labels_output_file_path,
-                       labels,
-                       delimiter=", ",
-                       fmt='%s')
-            np.savetxt(summary_output_file_path,
-                       self.summary,
-                       delimiter=", ",
-                       fmt='%s')
+            info_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_info.csv',self.output_model_name)
+            self.summary.to_csv(summary_output_file_path,index=False)
+            self.info.to_csv(info_output_file_path,index=False)
             self.save_model()
+    def create_summary_line(self,losses,labels,steps,size,params):
+        summary_line = [steps,size]
+        for param in params:
+            top_val,top_ind = th.topk(losses,param,0)
+            top_labels = labels[top_ind.tolist()]
+            summary_line.append(sum(top_labels))
+
+        summary_line = pd.DataFrame([summary_line], columns=self.summary.columns)
+        return summary_line
+
+    def normalize(self, tensor):
+        return (tensor-th.min(tensor))/(max(tensor)-min(tensor))
 
     def save_model(self):
         kstep = int(self.step / 1000)

@@ -31,7 +31,7 @@ def main():
         batch_size=1,
         row_size=1,
         log_interval=100,
-        save_interval=10000,
+        save_interval=1000,
         lr=0.0001,
         lr_anneal_steps=5000,
         num_samples=100,
