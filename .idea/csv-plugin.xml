@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/aloi_lof1.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/b.csv">
           <value>
             <Attribute>
@@ -66,7 +73,28 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/credit_10k_40to50_isolation.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/creditcard_full_10k.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/creditcard_full_10k_40to50.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/creditcard_full_10k_upto04dist.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -94,6 +122,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/pen_isolation.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/pen_lof.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/r.csv">
           <value>
             <Attribute>
@@ -115,6 +157,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/shuttle_isolation.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/shuttle_lof.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/temp.csv">
           <value>
             <Attribute>
@@ -130,6 +186,13 @@
           </value>
         </entry>
         <entry key="/datasets/winequality-white.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/experiments/old/7_8_22/5cols_4gauss.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -193,6 +256,27 @@
           </value>
         </entry>
         <entry key="/logs/log-2022-08-04-18/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/aloi_512bit_200steps_summary.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/aloi_512bit_info.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/aloi_512bit_summary.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

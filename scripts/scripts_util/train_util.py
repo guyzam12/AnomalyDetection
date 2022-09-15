@@ -32,8 +32,6 @@ class TrainLoop:
         data_obj,
         **kwargs,
     ):
-        self.summary = pd.DataFrame(columns=["Steps", "Size", "Top 10", "Top 20", "Top 50", "Top 100", "Top 1000"])
-        self.info = pd.DataFrame(columns=["Index", "Loss", "Distance"])
         self.data_obj = data_obj
         self.model = model
         self.diffusion = diffusion
@@ -55,6 +53,19 @@ class TrainLoop:
         self.kwargs = kwargs
         self.loss_per_sample = th.zeros(len(self.data_obj),dtype=th.double)
         self.occ_per_sample = th.zeros(len(self.data_obj))
+        self.summary_file = self.init_summary_file()
+
+    def init_summary_file(self):
+        columns = ["Index","Labels","Loss"]
+        labels = self.data_obj.get_all_labels()
+        for i in range(10,50):
+            columns.append("Dist{}nn".format(i))
+        summary_file = pd.DataFrame(columns=columns)
+        summary_file = summary_file.assign(Index=np.arange(len(labels)), Labels=labels)
+        distances = self.data_obj.get_distances()
+        for i in range(10,50):
+            summary_file["Dist{}nn".format(i)]=distances[i-10]
+        return summary_file
 
     def run_loop(self):
         while (
@@ -88,10 +99,6 @@ class TrainLoop:
 
     def run_step(self, batch,idx):
         self.forward_backward(batch,idx)
-        #self.opt.zero_grad()
-        # outputs = self.model(batch.float())
-        # #self.loss = self.criterion(outputs, labels.float())
-        # self.loss.backward()
         self.opt.step()
         if self.step % self.log_interval == 0:
             self.log_step()
@@ -99,37 +106,32 @@ class TrainLoop:
             self.steps_acc = th.cat((self.steps_acc,th.unsqueeze(th.tensor(self.step),dim=0)),dim=0)
             logger.dumpkvs()
         if self.step % self.save_interval == 0 and self.step != 0:
-            mask = self.occ_per_sample != 0
-            losses = th.zeros_like(self.loss_per_sample)
-            losses[mask] = self.loss_per_sample[mask]/self.occ_per_sample[mask]
-            losses = self.normalize(losses)
-            distances = self.data_obj.get_distances()
-            labels = self.data_obj.get_all_labels()
-            ind = np.where(labels==1)[0]
-            dist_top1k,top_ind = th.topk(distances,50000)
-            distances = distances[ind]
-            los = losses[ind]
-            self.info['Index'] = pd.Series(ind)
-            self.info['Loss'] = pd.Series(los)
-            self.info['Distance'] = pd.Series(distances)
-
-            labels = th.tensor(labels)
-            los_top1k = losses[top_ind]
-            labels_top1k = labels[top_ind]
-            df = pd.DataFrame(columns=["Index","Labels","Loss","Distance"])
-            df["Index"] = pd.Series(top_ind)
-            df["Labels"] = pd.Series(labels_top1k)
-            df["Loss"] = pd.Series(los_top1k)
-            df["Distance"] = pd.Series(dist_top1k)
-            df_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_'+str(self.step)+'steps_summary.csv',self.output_model_name)
-            df.to_csv(df_output_file_path,index=False)
-            summary_line = self.create_summary_line(losses,labels,self.step,self.model.get_size(),[5,10,50,200,1000])
-            self.summary = self.summary.append(summary_line)
-            summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_summary.csv',self.output_model_name)
-            info_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_info.csv',self.output_model_name)
-            self.summary.to_csv(summary_output_file_path,index=False)
-            self.info.to_csv(info_output_file_path,index=False)
+            self.create_summary_file()
             self.save_model()
+
+            #labels = th.tensor(labels)
+            #df["Index"] = pd.Series(top_ind)
+            #df["Labels"] = pd.Series(labels_top1k)
+            #df["Loss"] = pd.Series(los_top1k)
+            #df["Distance"] = pd.Series(dist_top1k)
+            #df_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_'+str(self.step)+'steps_summary.csv',self.output_model_name)
+            #df.to_csv(df_output_file_path,index=False)
+            #summary_line = self.create_summary_line(losses,labels,self.step,self.model.get_size(),[5,10,50,200,1000])
+            #self.summary = self.summary.append(summary_line)
+            #summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_summary.csv',self.output_model_name)
+            #self.summary.to_csv(summary_output_file_path,index=False)
+
+
+    def create_summary_file(self):
+        mask = self.occ_per_sample != 0
+        losses = th.zeros_like(self.loss_per_sample)
+        losses[mask] = self.loss_per_sample[mask] / self.occ_per_sample[mask]
+        losses = self.normalize(losses)
+        self.summary_file['Loss'] = losses
+        summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_'+str(self.step)+'steps_summary.csv',self.output_model_name)
+        self.summary_file.to_csv(summary_output_file_path,index=False)
+        print("hi")
+
     def create_summary_line(self,losses,labels,steps,size,params):
         summary_line = [steps,size]
         for param in params:

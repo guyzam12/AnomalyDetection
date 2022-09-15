@@ -4,6 +4,7 @@ Train a diffusion model on tables.
 
 import torch as th
 import argparse
+import pandas as pd
 
 from scripts_util.argparser_util import (
     create_argparser,
@@ -31,22 +32,37 @@ def main():
         batch_size=0,
         row_size=0,
         log_interval=200,
-        save_interval=20000,
+        save_interval=10000,
         lr=0.0001,
         lr_anneal_steps=1000000,
         load_model="",
         project_path="/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion"
     )
 
-    # Create argparser with default parameters
+    # Argparser with default parameters
     args = create_argparser(defaults).parse_args()
     args = update_args(args, True, False)
+
+    # Logger configuration
+    logger.configure()
+
+    # Data object
+    data_obj = TableDataset(
+        args.data_file,
+        args.output_model_name,
+    )
+    #  Data Loader
+    logger.log("creating data loader...")
+    data = load_data(
+        data_obj=data_obj,
+        batch_size=args.batch_size,
+    )
+
+    args.row_size = data_obj.get_row_size() # Update args row size
 
     # GPU Handling
     #dist_util.setup_dist() #TODO
 
-    # Logger configuration
-    logger.configure()
 
     # Creation of model and diffusion models
     logger.log("creating model and diffusion...")
@@ -54,18 +70,6 @@ def main():
     if args.load_model != "":
         model_obj.load_state_dict(th.load(args.load_model))
     diffusion_obj = diffusion.create_diffusion(**args_to_dict(args,diffusion_defaults().keys()))
-
-    # Creating TableDataset
-    data_obj = TableDataset(
-        args.data_file,
-        args.output_model_name,
-    )
-    # Creating of data loader
-    logger.log("creating data loader...")
-    data = load_data(
-        data_obj=data_obj,
-        batch_size=args.batch_size,
-    )
 
     # Training
     logger.log("training...")

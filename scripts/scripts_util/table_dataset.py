@@ -55,64 +55,56 @@ class TableDataset(Dataset):
             output_model_name,
     ):
         super().__init__()
-        self.data_file = pd.read_csv(data_file, header=None)
-        df = self.data_file
-        #df = self.data_file.iloc[:,1:]
-        self.data_file_labels = df.iloc[:,-1]
-        df = df.iloc[:,:-1]
-        self.data_file = df
-        self.max_per_col = self.data_file.max()
-        self.min_per_col = self.data_file.min()
-        self.mean_per_col = self.data_file.mean()
-        self.std_per_col = self.data_file.std(ddof=0)
-        pkl = {'max_per_col': self.max_per_col, 'min_per_col': self.min_per_col}
-        pkldf = pd.DataFrame(data=pkl)
-        pkldf.to_pickle(output_model_name.replace('.pt', '.pkl'))
-        self.norm_data_file = self.normalize_data()
+        self.df = pd.read_csv(data_file, header=None)
+        self.row_size = self.df.shape[1] - 1
+        self.X = self.df.iloc[:,:-1]
+        self.X = self.normalize_data(self.X)
+        self.t = self.df.iloc[:,-1]
+        self.create_norm_params_file(self.df,output_model_name)
         self.distances = self.knn()
 
     def __len__(self):
-        return th.tensor(len(self.norm_data_file))
+        return th.tensor(len(self.X))
 
     def __getitem__(self, idx):
-        return th.tensor(self.norm_data_file.iloc[idx].values),idx
+        return th.tensor(self.X.iloc[idx].values),idx
 
-    def normalize_data(self):
-        #norm_data_file = (self.data_file - self.mean_per_col)/self.std_per_col
-        norm_data_file = 2*(self.data_file - self.min_per_col)/(self.max_per_col-self.min_per_col) - 1
-        return norm_data_file
-        #return (self.data_file - min_per_column)/(max_per_column-min_per_column)
+    def create_norm_params_file(self,df,output_model_name):
+        pkl = {'max_per_col': df.iloc[:,:-1].max(), 'min_per_col': df.iloc[:,:-1].min()}
+        pkldf = pd.DataFrame(data=pkl)
+        pkldf.to_pickle(output_model_name.replace('.pt', '.pkl'))
+
+
+    def normalize_data(self, X):
+        max_per_col, min_per_col = X.max(), X.min()
+        X = 2*(X - min_per_col)/(max_per_col-min_per_col) - 1
+        return X
 
     def knn(self):
-        df = self.norm_data_file
-        #nbrs = NearestNeighbors(n_neighbors=50)
-        #nbrs.fit(df)
-        #distances, indexes = nbrs.kneighbors(df)
-        #distances = pd.DataFrame(distances)
-        #distance_mean = th.zeros(distances.shape[0])
-        distances_mean = 0
-        count=0
+        X = self.X
+        nbrs = NearestNeighbors(n_neighbors=51)
+        nbrs.fit(X)
+        distances, indexes = nbrs.kneighbors(X)
+        distances_mean = []
         for i in range(10,51):
-            nbrs = NearestNeighbors(n_neighbors=i)
-            nbrs.fit(df)
-            distances, indexes = nbrs.kneighbors(df)
-            distances_org = distances
-            distances = distances*np.exp(-distances/2)
-            distances = np.mean(distances,axis=1)
-            dist = distances
-            #dist = (dist - min(dist)) / (max(dist) - min(dist))
-            distances_mean += dist
-            count += 1
-        distances_mean /= count
-        #distances_mean = th.tensor(distances.iloc[:,1:].mean(axis=1))
-        distances_mean = (distances_mean - min(distances_mean))/(max(distances_mean)-min(distances_mean))
-        return th.tensor(distances_mean)
+            temp1 = distances[:,1:i]
+            temp = temp1*np.exp(-temp1)
+            #cur_distances = np.mean(distances[:,1:i],axis=1)
+            cur_distances = np.mean(temp[:,1:i],axis=1)
+            min, max = np.min(cur_distances), np.max(cur_distances)
+            cur_distances = (cur_distances-min)/(max-min)
+            distances_mean.append(cur_distances)
+        return distances_mean
 
     def get_labels(self,idx):
-        return self.data_file_labels[idx]
+        return self.t[idx]
 
     def get_all_labels(self):
-        return self.data_file_labels
+        return self.t
 
     def get_distances(self):
         return self.distances
+
+    def get_row_size(self):
+        return self.row_size
+
