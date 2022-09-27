@@ -18,5 +18,4 @@ table_evaluator.visual_evaluation()
 =======
 table_evaluator.visual_evaluation()
 #table_evaluator.evaluate(target_col=1)
-print("ho")
 >>>>>>> 52726769506eac2702c6f4fc047503fbe2a77baf

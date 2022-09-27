@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader, Dataset, BatchSampler
 import torch as th
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data.sampler import Sampler
-from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import NearestNeighbors, LocalOutlierFactor
 
 def load_data(
         data_obj,
@@ -61,7 +61,10 @@ class TableDataset(Dataset):
         self.X = self.normalize_data(self.X)
         self.t = self.df.iloc[:,-1]
         self.create_norm_params_file(self.df,output_model_name)
-        self.distances = self.knn()
+        self.distances = self.knn(knn_small=1,knn_high=50)
+        self.lof = self.lof(knn_small=10,knn_high=15)
+
+
 
     def __len__(self):
         return th.tensor(len(self.X))
@@ -80,21 +83,29 @@ class TableDataset(Dataset):
         X = 2*(X - min_per_col)/(max_per_col-min_per_col) - 1
         return X
 
-    def knn(self):
+    def knn(self, knn_small, knn_high):
         X = self.X
-        nbrs = NearestNeighbors(n_neighbors=51)
+        nbrs = NearestNeighbors(n_neighbors=knn_high+1)
         nbrs.fit(X)
         distances, indexes = nbrs.kneighbors(X)
         distances_mean = []
-        for i in range(10,51):
-            temp1 = distances[:,1:i]
-            temp = temp1*np.exp(-temp1)
-            #cur_distances = np.mean(distances[:,1:i],axis=1)
-            cur_distances = np.mean(temp[:,1:i],axis=1)
-            min, max = np.min(cur_distances), np.max(cur_distances)
-            cur_distances = (cur_distances-min)/(max-min)
+        for i in range(knn_small+1,knn_high+1):
+            cur_distances = np.mean(distances[:,1:i],axis=1)
+            min_per_col, max_per_col = np.min(cur_distances), np.max(cur_distances)
+            cur_distances = (cur_distances-min_per_col) / (max_per_col-min_per_col)
             distances_mean.append(cur_distances)
         return distances_mean
+
+    def lof(self, knn_small, knn_high):
+        lof_mean = []
+        for i in range(knn_small, knn_high):
+            clf = LocalOutlierFactor(n_neighbors=i)
+            pred = clf.fit_predict(self.X)
+            lof = -clf.negative_outlier_factor_
+            lof = (lof - np.min(lof)) / (np.max(lof) - np.min(lof))
+            lof_mean.append(lof)
+
+        return lof_mean
 
     def get_labels(self,idx):
         return self.t[idx]
@@ -108,3 +119,5 @@ class TableDataset(Dataset):
     def get_row_size(self):
         return self.row_size
 
+    def get_lof(self):
+        return self.lof

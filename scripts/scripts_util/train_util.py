@@ -53,18 +53,25 @@ class TrainLoop:
         self.kwargs = kwargs
         self.loss_per_sample = th.zeros(len(self.data_obj),dtype=th.double)
         self.occ_per_sample = th.zeros(len(self.data_obj))
-        self.summary_file = self.init_summary_file()
+        self.summary_file = self.init_summary_file(knn_low=1,knn_high=50)
 
-    def init_summary_file(self):
+    def init_summary_file(self,knn_low,knn_high):
         columns = ["Index","Labels","Loss"]
-        labels = self.data_obj.get_all_labels()
-        for i in range(10,50):
-            columns.append("Dist{}nn".format(i))
         summary_file = pd.DataFrame(columns=columns)
+        labels = self.data_obj.get_all_labels()
         summary_file = summary_file.assign(Index=np.arange(len(labels)), Labels=labels)
         distances = self.data_obj.get_distances()
-        for i in range(10,50):
-            summary_file["Dist{}nn".format(i)]=distances[i-10]
+        lof = self.data_obj.get_lof()
+        for i in range(knn_low-1,knn_high-1):
+            summary_file["Dist{}nn".format(i)]=distances[i]
+        for i in range(0,5):
+            #for j in range(knn_low-1,knn_high-1):
+                #temp = (lof[i]+0*distances[j])
+                #temp = (lof[i])
+                #temp = self.normalize(temp)
+                #summary_file["LOF{}+knn{}".format(i,j)]=temp
+            summary_file["LOF{}nn".format(i)]=lof[i]
+
         return summary_file
 
     def run_loop(self):
@@ -109,19 +116,6 @@ class TrainLoop:
             self.create_summary_file()
             self.save_model()
 
-            #labels = th.tensor(labels)
-            #df["Index"] = pd.Series(top_ind)
-            #df["Labels"] = pd.Series(labels_top1k)
-            #df["Loss"] = pd.Series(los_top1k)
-            #df["Distance"] = pd.Series(dist_top1k)
-            #df_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_'+str(self.step)+'steps_summary.csv',self.output_model_name)
-            #df.to_csv(df_output_file_path,index=False)
-            #summary_line = self.create_summary_line(losses,labels,self.step,self.model.get_size(),[5,10,50,200,1000])
-            #self.summary = self.summary.append(summary_line)
-            #summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_summary.csv',self.output_model_name)
-            #self.summary.to_csv(summary_output_file_path,index=False)
-
-
     def create_summary_file(self):
         mask = self.occ_per_sample != 0
         losses = th.zeros_like(self.loss_per_sample)
@@ -130,20 +124,11 @@ class TrainLoop:
         self.summary_file['Loss'] = losses
         summary_output_file_path = re.sub('.pt','_'+str(self.model.get_size())+'bit_'+str(self.step)+'steps_summary.csv',self.output_model_name)
         self.summary_file.to_csv(summary_output_file_path,index=False)
-        print("hi")
 
-    def create_summary_line(self,losses,labels,steps,size,params):
-        summary_line = [steps,size]
-        for param in params:
-            top_val,top_ind = th.topk(losses,param,0)
-            top_labels = labels[top_ind.tolist()]
-            summary_line.append(sum(top_labels))
-
-        summary_line = pd.DataFrame([summary_line], columns=self.summary.columns)
-        return summary_line
-
-    def normalize(self, tensor):
-        return (tensor-th.min(tensor))/(max(tensor)-min(tensor))
+    def normalize(self, input):
+        if isinstance(input,np.ndarray):
+            return (input-np.min(input))/(np.max(input)-np.min(input))
+        return (input-th.min(input))/(max(input)-min(input))
 
     def save_model(self):
         kstep = int(self.step / 1000)

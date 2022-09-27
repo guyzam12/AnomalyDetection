@@ -17,13 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="$APPLICATION_CONFIG_DIR$/scratches/c.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="$APPLICATION_CONFIG_DIR$/scratches/sample.csv">
           <value>
             <Attribute>
@@ -38,21 +31,14 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/aloi-unsupervised-ad_1.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/aloi-unsupervised-ad_2.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/datasets/aloi_lof1.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/annthyroid-unsupervised-ad.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -102,20 +88,6 @@
           </value>
         </entry>
         <entry key="/datasets/pen-local-unsupervised-ad.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/pen-local-unsupervised-ad_1.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/pen_1.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -199,69 +171,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/experiments_final/7_8_22/5cols_4gauss.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-01-16/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-03-09/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-03-10/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-03-14/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-03-18/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-04-16/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-04-17/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/logs/log-2022-08-04-18/progress.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/models/aloi_512bit_200steps_summary.csv">
           <value>
             <Attribute>
@@ -277,27 +186,6 @@
           </value>
         </entry>
         <entry key="/models/aloi_512bit_summary.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/models/credit_64bit_losses.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/models/credit_full_1024bit_losses.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/models/credit_full_128bit_losses_1Msteps.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

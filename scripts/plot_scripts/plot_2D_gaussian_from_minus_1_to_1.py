@@ -16,4 +16,3 @@ plt.plot(x_arr, y_arr,'ro',markersize=3)
 plt.plot(x_data,y_data,linewidth=2)
 plt.show()
 
-print(np.mean(temp['arr_0'],axis=0))
