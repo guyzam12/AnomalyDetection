@@ -1,0 +1,1 @@
+Logging to /Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/logs/log-2022-10-18-10

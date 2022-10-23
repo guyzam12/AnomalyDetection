@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from torch.utils.data.sampler import Sampler
 from sklearn.neighbors import NearestNeighbors, LocalOutlierFactor
 
+
 def load_data(
         data_obj,
         batch_size=1,
@@ -47,7 +48,6 @@ def load_data(
     while True:
         yield from loader
 
-
 class TableDataset(Dataset):
     def __init__(
             self,
@@ -61,10 +61,8 @@ class TableDataset(Dataset):
         self.X = self.normalize_data(self.X)
         self.t = self.df.iloc[:,-1]
         self.create_norm_params_file(self.df,output_model_name)
-        self.distances = self.knn(knn_small=1,knn_high=50)
-        self.lof = self.lof(knn_small=10,knn_high=15)
-
-
+        self.distances = self.knn(knn_small=1,knn_high=51)
+        self.lof = self.lof(knn_small=1,knn_high=51)
 
     def __len__(self):
         return th.tensor(len(self.X))
@@ -85,27 +83,52 @@ class TableDataset(Dataset):
 
     def knn(self, knn_small, knn_high):
         X = self.X
-        nbrs = NearestNeighbors(n_neighbors=knn_high+1)
+        nbrs = NearestNeighbors(n_neighbors=knn_high)
         nbrs.fit(X)
         distances, indexes = nbrs.kneighbors(X)
         distances_mean = []
-        for i in range(knn_small+1,knn_high+1):
-            cur_distances = np.mean(distances[:,1:i],axis=1)
+        #df = pd.DataFrame()
+        count = 0
+        for i in range(knn_small,knn_high):
+            print(i)
+            #cur_distances = distances[:,i]
+            cur_distances = np.mean(distances[:,1:i+1],axis=1)
             min_per_col, max_per_col = np.min(cur_distances), np.max(cur_distances)
+            #df["KNN{}_mean".format(i-1)] = cur_distances
+            #df["KNN{}_kth".format(i-1)] = distances[:,i-1]
             cur_distances = (cur_distances-min_per_col) / (max_per_col-min_per_col)
             distances_mean.append(cur_distances)
+            count += 1
+
+        #mean_distances = np.mean(distances[:,1:],axis=1)
+        #mean_distances = (mean_distances - np.min(mean_distances)) / (np.max(mean_distances) - np.min(mean_distances))
+
+        #df.to_csv('/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/final_models/aloi_knn.csv')
         return distances_mean
 
     def lof(self, knn_small, knn_high):
-        lof_mean = []
+        lof_list = []
+        lof_list_new = []
+        mean_lof = 0
+        count = 0
         for i in range(knn_small, knn_high):
+            print(i)
             clf = LocalOutlierFactor(n_neighbors=i)
             pred = clf.fit_predict(self.X)
             lof = -clf.negative_outlier_factor_
+            #mean_lof += lof
             lof = (lof - np.min(lof)) / (np.max(lof) - np.min(lof))
-            lof_mean.append(lof)
+            lof_list.append(lof)
+            count += 1
 
-        return lof_mean
+        #lof_list = np.array(lof_list).T
+        #for i in range(knn_small, knn_high):
+        #    mean_lof = np.mean(lof_list[:,:i],axis=1)
+        #    mean_lof = (mean_lof - np.min(mean_lof)) / (np.max(mean_lof) - np.min(mean_lof))
+        #    lof_list_new.append(mean_lof)
+        #mean_lof /= count
+        #mean_lof = (mean_lof - np.min(mean_lof)) / (np.max(mean_lof) - np.min(mean_lof))
+        return lof_list
 
     def get_labels(self,idx):
         return self.t[idx]
@@ -121,3 +144,4 @@ class TableDataset(Dataset):
 
     def get_lof(self):
         return self.lof
+

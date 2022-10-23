@@ -1,0 +1,43 @@
+Logging to /Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/logs/log-2022-10-13-15
+creating data loader...
+creating model and diffusion...
+training...
+----------------------
+| loss    | 1.15     |
+| loss_q0 | 1.09     |
+| loss_q1 | 1.15     |
+| loss_q2 | 1.23     |
+| loss_q3 | 1.15     |
+| mse     | 1.15     |
+| mse_q0  | 1.09     |
+| mse_q1  | 1.15     |
+| mse_q2  | 1.23     |
+| mse_q3  | 1.15     |
+| step    | 0        |
+----------------------
+----------------------
+| loss    | 0.204    |
+| loss_q0 | 0.534    |
+| loss_q1 | 0.127    |
+| loss_q2 | 0.0822   |
+| loss_q3 | 0.0803   |
+| mse     | 0.204    |
+| mse_q0  | 0.534    |
+| mse_q1  | 0.127    |
+| mse_q2  | 0.0822   |
+| mse_q3  | 0.0803   |
+| step    | 200      |
+----------------------
+----------------------
+| loss    | 0.139    |
+| loss_q0 | 0.448    |
+| loss_q1 | 0.0641   |
+| loss_q2 | 0.0259   |
+| loss_q3 | 0.0232   |
+| mse     | 0.139    |
+| mse_q0  | 0.448    |
+| mse_q1  | 0.0641   |
+| mse_q2  | 0.0259   |
+| mse_q3  | 0.0232   |
+| step    | 400      |
+----------------------

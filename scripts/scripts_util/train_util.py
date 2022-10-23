@@ -62,9 +62,10 @@ class TrainLoop:
         summary_file = summary_file.assign(Index=np.arange(len(labels)), Labels=labels)
         distances = self.data_obj.get_distances()
         lof = self.data_obj.get_lof()
-        for i in range(knn_low-1,knn_high-1):
+        for i in range(knn_low-1,knn_high):
             summary_file["Dist{}nn".format(i)]=distances[i]
-        for i in range(0,5):
+        for i in range(knn_low-1,knn_high):
+        #for i in range(0, 11):
             #for j in range(knn_low-1,knn_high-1):
                 #temp = (lof[i]+0*distances[j])
                 #temp = (lof[i])

@@ -32,7 +32,7 @@ def main():
         batch_size=0,
         row_size=0,
         log_interval=200,
-        save_interval=20000,
+        save_interval=200,
         lr=0.0001,
         lr_anneal_steps=500000,
         load_model="",

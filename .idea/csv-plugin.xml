@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/Iris.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/aloi-unsupervised-ad.csv">
           <value>
             <Attribute>
@@ -31,7 +38,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/aloi_lof1.csv">
+        <entry key="/datasets/aloi_isolation.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -45,42 +52,35 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/b.csv">
+        <entry key="/datasets/annthyroid_isolation.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/banknote_authentication_dataset_5ones.csv">
+        <entry key="/datasets/ionoshpere.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/credit_10k_40to50_isolation.csv">
+        <entry key="/datasets/ionoshpere_1.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/creditcard_full_10k.csv">
+        <entry key="/datasets/ionoshpere_2.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/creditcard_full_10k_40to50.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/creditcard_full_10k_upto04dist.csv">
+        <entry key="/datasets/pen-global-unsupervised-ad.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -94,35 +94,14 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/datasets/pen_global_isolation.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/pen_isolation.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/pen_lof.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/r.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/sample.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/datasets/sample_1.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -136,14 +115,14 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/shuttle_lof.csv">
+        <entry key="/datasets/temp.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/datasets/temp.csv">
+        <entry key="/datasets/vowels-unsupervised-ad.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -171,6 +150,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/final_models/letter_512bit_500000steps_summary.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-09-21-17/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/logs/log-2022-09-21-18/progress.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/models/aloi_512bit_200steps_summary.csv">
           <value>
             <Attribute>
@@ -186,6 +186,13 @@
           </value>
         </entry>
         <entry key="/models/aloi_512bit_summary.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/letter_512bit_200000steps_summary.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
