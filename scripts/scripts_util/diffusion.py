@@ -9,14 +9,14 @@ NUM_CLASSES = 1000
 
 
 def create_diffusion(
-        steps=100,
+        steps=1000,
         noise_schedule="linear",
 ):
     return create_gaussian_diffusion(steps,noise_schedule)
 
 
 def create_gaussian_diffusion(
-        steps=100,
+        steps=1000,
         noise_schedule="linear",
 ):
     betas = gd.get_named_beta_schedule(noise_schedule, steps)

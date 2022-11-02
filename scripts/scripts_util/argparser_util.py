@@ -77,3 +77,10 @@ def update_args(args,table_train,table_sample):
         )
         args.denorm_file = re.sub(r'_[^_]*.pt','.pkl',args.load_model)
     return args
+
+
+def update_args_anomaly(args):
+    args.output_anomaly_name = '{}/anomaly_scores/{}.csv' \
+        .format(args.project_path,args.output_anomaly_name)
+    args.train_data_file = re.sub(r'_test','_train',args.data_file)
+    return args

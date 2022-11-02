@@ -3,11 +3,15 @@ import numpy as np
 import torch as th
 from sklearn import metrics
 from scipy import stats
+from scipy.spatial import distance
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
-LOF_SMALL,LOF_BIG = 10,15
-DIST_SMALL,DIST_BIG = 0,50
+LOF_SMALL,LOF_BIG = 10,11
+DIST_SMALL,DIST_BIG = 10,11
 ISOLATION_SMALL,ISOLATION_BIG = 0,1
 LOSS_SMALL,LOSS_BIG = 0,1
+FEATURES = False
 
 def normalize(input):
     if isinstance(input, np.ndarray):
@@ -60,13 +64,15 @@ def create_df_main(df_orig, df_results):
     features_num = df_orig_cols - 1
     samples_num = df_orig_rows
     df_main = df_results[["Index", "Labels", "Loss"]].copy()
-    for i in range(features_num):
-        df_main["f{}".format(i)] = normalize(df_orig[i])
-    for i in range(50):
+
+    if FEATURES == True:
+        for i in range(features_num):
+            df_main["f{}".format(i)] = normalize(df_orig[i])
+    for i in range(LOF_SMALL,LOF_BIG):
         df_main["LOF{}nn".format(i)] = normalize(df_results["LOF{}nn".format(i)])
-    for i in range(50):
+    for i in range(DIST_SMALL,DIST_BIG):
         df_main["Dist{}nn".format(i)] = normalize(df_results["Dist{}nn".format(i)])
-    for i in range(1):
+    for i in range(ISOLATION_SMALL,ISOLATION_BIG):
         df_main["Isolation"] = normalize(df_results["Isolation"])
     return df_main
 
@@ -100,7 +106,8 @@ def process_df(
     best_feature_name,
     zscore_sum_list
 ):
-    methods_list.append("f")
+    if FEATURES == True:
+        methods_list.append("f")
     features_num = (df.filter(regex='f[0-9]+$', axis=1)).shape[1]
     for method in methods_list:
         if method == "Dist":
@@ -122,18 +129,84 @@ def process_df(
                     feature_name = "{}".format(method)
                 else:
                     feature_name = "{}{}".format(method,i)
+            feature_orig = df["{}".format(feature_name)]
+            sum_zscore_feature_orig = sum(abs(stats.zscore(feature_orig)))
+            sum_zscore_loss = sum(abs(stats.zscore(loss)))
             feature_mse = df["{}_mse".format(feature_name)]
             norm_feature_mse = df["{}_mse_norm".format(feature_name)]
-            mse_sum = sum(norm_feature_mse)
+            mse_sum = sum(feature_mse)
             mse_zscore_sum = sum(abs(stats.zscore(norm_feature_mse)))
+            loss_feature_orig = pd.concat([loss, feature_orig], axis=1)
+            loss_feature_mse = pd.concat([loss, feature_mse], axis=1)
+            feature_orig_feature_mse = pd.concat([feature_orig, feature_mse], axis=1)
+            pca = PCA(n_components=1)
+            pca_x = pca.fit_transform(loss_feature_orig)
+            pca_comp = pca.components_
+            pca_mean = pca.mean_
+            pca_explaine_variance_ratio = pca.explained_variance_ratio_
+            x_temp = pca_x @ pca_comp + pca_mean
+            t = loss_feature_orig - x_temp
+            t_sum = np.sum(abs(t), axis=1)
+            #print("AUC: {}".format(auc(t_sum,labels)))
+            print("pca ratio loss and feature orig: {}".format(pca_explaine_variance_ratio))
+            pca = PCA(n_components=1)
+            pca_x = pca.fit_transform(loss_feature_mse)
+            pca_comp = pca.components_
+            pca_mean = pca.mean_
+            pca_explaine_variance_ratio = pca.explained_variance_ratio_
+            x_temp = pca_x @ pca_comp + pca_mean
+            t = loss_feature_mse - x_temp
+            t_sum = np.sum(abs(t), axis=1)
+            #print("AUC: {}".format(auc(t_sum,labels)))
+            print("pca ratio loss and mse: {}".format(pca_explaine_variance_ratio))
+            pca = PCA(n_components=1)
+            pca_x = pca.fit_transform(feature_orig_feature_mse)
+            pca_comp = pca.components_
+            pca_mean = pca.mean_
+            pca_explaine_variance_ratio = pca.explained_variance_ratio_
+            x_temp = pca_x @ pca_comp + pca_mean
+            t = feature_orig_feature_mse - x_temp
+            t_sum = np.sum(abs(t), axis=1)
+            #print("AUC: {}".format(auc(t_sum,labels)))
+            print("pca ratio feature orig and mse: {}".format(pca_explaine_variance_ratio))
+
             #mse_zscore_sum = sum(norm_feature_mse/np.std(norm_feature_mse))
             zscore_sum_list.append(mse_zscore_sum)
             auc_list.append(auc(feature_mse, labels))
             feature_list.append(feature_name)
-            print("{} AUC: {}".format(feature_name, auc(feature_mse, labels)))
+
+            temp = df.loc[df["Labels"]==1].index.values
+            loss_feature_orig_outliers = loss_feature_orig.iloc[temp]
+            loss_feature_mse_outliers = loss_feature_mse.iloc[temp]
+            feature_orig_feature_mse_outliers = feature_orig_feature_mse.iloc[temp]
+            #if feature_name == "f16":
+            plt.scatter(feature_orig,loss,c='blue')
+            plt.scatter(loss_feature_orig_outliers.iloc[:,1],loss_feature_orig_outliers.iloc[:,0],c='red')
+            plt.xlabel("{}".format(feature_name))
+            plt.ylabel("loss")
+            plt.show()
+            plt.scatter(feature_orig,norm_feature_mse)
+            plt.scatter(feature_orig.iloc[temp],norm_feature_mse.iloc[temp],c='red')
+            plt.ylabel("{}_mse".format(feature_name))
+            plt.xlabel(feature_name)
+            plt.show()
+            plt.scatter(loss,norm_feature_mse)
+            plt.scatter(loss.iloc[temp],norm_feature_mse.iloc[temp],c='red')
+            plt.ylabel("{}_mse".format(feature_name))
+            plt.xlabel("loss")
+            plt.show()
+            print("{} AUC mse: {}".format(feature_name, auc(feature_mse, labels)))
+            print("{} AUC mse + loss: {}".format(feature_name, auc(feature_mse + loss, labels)))
+            print("{} AUC mse + feature: {}".format(feature_name, auc(feature_mse + feature_orig, labels)))
+            print("{} AUC mse + feature + loss: {}".format(feature_name, auc(feature_mse + feature_orig + loss, labels)))
+            print("{} AUC: {}".format(feature_name, auc(feature_orig, labels)))
+            print("AUC loss: {}".format(auc(loss, labels)))
             print("zscore {} mse sum: {}".format(feature_name, mse_zscore_sum))
-            print("sum {} mse: {}".format(feature_name, mse_sum))
-            if mse_sum == 0:
+            print("zscore {} orig feature: {}".format(feature_name, sum_zscore_feature_orig))
+            print("zscore loss sum: {}".format(sum_zscore_loss))
+            print("sum {} mse: {}\n".format(feature_name, mse_sum))
+            if mse_sum < 0.1:
+                print(feature_name)
                 continue
             if mse_zscore_sum < minimum_zscore_sum:
                 best_auc = auc(feature_mse, labels)
@@ -144,7 +217,8 @@ def process_df(
     return minimum_zscore_sum, auc_list, feature_list, best_auc, best_feature_name, best_feature_mse, zscore_sum_list
 
 def create_cur_df_main(cur_df_main,loss,method,features_num):
-    cur_df_main = add_mse(cur_df_main, loss, "f", 0, features_num)
+    if FEATURES == True:
+        cur_df_main = add_mse(cur_df_main, loss, "f", 0, features_num)
     if method == "Loss":
         cur_df_main = add_mse(cur_df_main, loss,"Dist", DIST_SMALL,DIST_BIG)
         cur_df_main = add_mse(cur_df_main, loss,"LOF",LOF_SMALL, LOF_BIG)
@@ -166,8 +240,8 @@ def create_cur_df_main(cur_df_main,loss,method,features_num):
 
     return cur_df_main
 
-df_orig = pd.read_csv("/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/pen-global-unsupervised-ad.csv", header=None)
-df_results = pd.read_csv("/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/final_models/pen_global_512bit_500000steps_summary.csv")
+df_orig = pd.read_csv("/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/datasets/aloi-unsupervised-ad.csv", header=None)
+df_results = pd.read_csv("/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/final_models/aloi_512bit_500000steps_summary.csv")
 df_main = create_df_main(df_orig, df_results)
 df_orig_rows, df_orig_cols = df_orig.shape
 features_num = df_orig_cols - 1
@@ -214,6 +288,7 @@ for method in methods_list:
         loss = df_main[method_name]
         cur_df_main = df_main.copy()
         cur_df_main = create_cur_df_main(cur_df_main,loss,method,features_num)
+        cur_df_main.to_csv("/Users/guyzamberg/PycharmProjects/git/AnomalyDiffusion/final_models/df_temp.csv")
         minimum_zscore_sum = 10000000
         best_auc = ""
         best_feature_name = ""

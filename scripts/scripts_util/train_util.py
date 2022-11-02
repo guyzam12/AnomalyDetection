@@ -65,12 +65,6 @@ class TrainLoop:
         for i in range(knn_low-1,knn_high):
             summary_file["Dist{}nn".format(i)]=distances[i]
         for i in range(knn_low-1,knn_high):
-        #for i in range(0, 11):
-            #for j in range(knn_low-1,knn_high-1):
-                #temp = (lof[i]+0*distances[j])
-                #temp = (lof[i])
-                #temp = self.normalize(temp)
-                #summary_file["LOF{}+knn{}".format(i,j)]=temp
             summary_file["LOF{}nn".format(i)]=lof[i]
 
         return summary_file

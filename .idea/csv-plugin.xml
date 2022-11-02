@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/anomaly_scores/pen_global_test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/datasets/Iris.csv">
           <value>
             <Attribute>
@@ -32,6 +39,13 @@
           </value>
         </entry>
         <entry key="/datasets/aloi-unsupervised-ad.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/aloi-unsupervised-ad_train.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -74,6 +88,13 @@
           </value>
         </entry>
         <entry key="/datasets/ionoshpere_2.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/datasets/letter-unsupervised-ad_test.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
